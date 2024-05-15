@@ -1,5 +1,8 @@
 package com.example.dailytaskplanner.utils
 
+import android.content.Intent
+import com.example.dailytaskplanner.App
+import com.example.dailytaskplanner.service.ForegroundService
 import kotlin.math.floor
 
 object AppUtils {
@@ -11,5 +14,14 @@ object AppUtils {
             color += chars[floor(Math.random() * 16).toInt()]
         }
         return color
+    }
+
+    fun startTaskService() {
+        App.mInstance.startService(
+            Intent(
+                App.mInstance.applicationContext,
+                ForegroundService::class.java
+            )
+        )
     }
 }

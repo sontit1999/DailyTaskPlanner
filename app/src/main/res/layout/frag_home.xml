@@ -10,7 +10,6 @@
             android:id="@+id/rvTask"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:background="#ABF1FA"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -19,6 +18,7 @@
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/btnAdd"
             android:layout_width="49dp"
+            app:backgroundTint="@color/color_main"
             android:layout_height="49dp"
             android:layout_margin="15dp"
             android:src="@drawable/baseline_playlist_add_24"

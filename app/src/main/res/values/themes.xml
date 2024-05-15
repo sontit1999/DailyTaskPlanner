@@ -4,4 +4,10 @@
     <style name="Theme.DailyTaskPlanner" parent="Theme.MaterialComponents.Light.DarkActionBar" >
         <item name="android:statusBarColor">#03A9F4</item>
     </style>
+
+    <style name="DialogTheme" parent="Theme.DailyTaskPlanner">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowFullscreen">false</item>
+        <item name="android:windowIsFloating">false</item>
+    </style>
 </resources>

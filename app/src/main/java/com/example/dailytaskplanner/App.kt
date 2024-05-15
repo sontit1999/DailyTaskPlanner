@@ -8,6 +8,12 @@ import dagger.hilt.android.HiltAndroidApp
 class App : Application() {
     override fun onCreate() {
         super.onCreate()
+        mInstance = this
         AppConfig.setup(this)
     }
+
+    companion object{
+        lateinit var mInstance: App
+    }
+
 }

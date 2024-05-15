@@ -3,4 +3,6 @@
     <string name="title_home">Home</string>
     <string name="title_profile">Profile</string>
     <string name="titlte_task">Họp daily hàng ngày</string>
+    <string name="create">Create</string>
+    <string name="new_task">New task .....</string>
 </resources>

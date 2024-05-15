@@ -1,9 +1,9 @@
 package com.example.dailytaskplanner.ui.profile
 
-import androidx.lifecycle.ViewModel
+import com.example.dailytaskplanner.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class ProfileViewModel @Inject constructor() : ViewModel() {
+class ProfileViewModel @Inject constructor() : BaseViewModel() {
 }

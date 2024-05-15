@@ -7,12 +7,13 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.example.dailytaskplanner.model.Task
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface TaskDao {
 
     @Query("SELECT * FROM task")
-    suspend fun getAll(): MutableList<Task>
+    fun getAllTask(): Flow<MutableList<Task>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(vararg tasks: Task)

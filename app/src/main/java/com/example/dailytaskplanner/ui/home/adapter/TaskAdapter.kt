@@ -3,24 +3,17 @@ package com.example.dailytaskplanner.ui.home.adapter
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.dailytaskplanner.databinding.ItemTaskBinding
 import com.example.dailytaskplanner.model.Task
-import com.example.dailytaskplanner.utils.AppUtils
 import com.example.dailytaskplanner.utils.setSafeOnClickListener
 
-class TaskAdapter : RecyclerView.Adapter<TaskAdapter.TaskViewHolder>() {
+class TaskAdapter : ListAdapter<Task, TaskAdapter.TaskViewHolder>(TaskDiffCallback()) {
 
-    private val listTask = mutableListOf<Task>()
     var onClickItem: ((Task) -> Unit)? = null
     var onClickCheckbox: ((Task) -> Unit)? = null
-
-    fun setData(listTask: List<Task>) {
-        this.listTask.clear()
-        this.listTask.addAll(listTask)
-        notifyDataSetChanged()
-    }
-
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskViewHolder {
         return TaskViewHolder(
@@ -32,10 +25,8 @@ class TaskAdapter : RecyclerView.Adapter<TaskAdapter.TaskViewHolder>() {
         )
     }
 
-    override fun getItemCount() = listTask.size
-
     override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
-        holder.bindData(listTask[position])
+        holder.bindData(getItem(position))
     }
 
     inner class TaskViewHolder(private val binding: ItemTaskBinding) :
@@ -44,19 +35,34 @@ class TaskAdapter : RecyclerView.Adapter<TaskAdapter.TaskViewHolder>() {
         init {
 
             binding.root.setOnClickListener {
-                onClickItem?.invoke(listTask[adapterPosition])
+                onClickItem?.invoke(getItem(adapterPosition))
             }
 
             binding.cbDone.setSafeOnClickListener {
-                onClickCheckbox?.invoke(listTask[adapterPosition])
+                onClickCheckbox?.invoke(getItem(adapterPosition))
             }
 
         }
 
         fun bindData(task: Task) {
-            binding.container.setCardBackgroundColor(Color.parseColor(AppUtils.randomColor()))
+            binding.icon.setImageResource(task.icon)
+            if(task.color.isNotEmpty()) {
+                binding.container.setCardBackgroundColor(Color.parseColor(task.color))
+            } else {
+                binding.container.setCardBackgroundColor(Color.parseColor("#99FFFF"))
+            }
             binding.tvTitle.text = task.title
             binding.cbDone.isChecked = task.isCompleted
+        }
+    }
+
+    class TaskDiffCallback : DiffUtil.ItemCallback<Task>() {
+        override fun areItemsTheSame(oldItem: Task, newItem: Task): Boolean {
+            return oldItem.id == newItem.id
+        }
+
+        override fun areContentsTheSame(oldItem: Task, newItem: Task): Boolean {
+            return oldItem == newItem
         }
     }
 }

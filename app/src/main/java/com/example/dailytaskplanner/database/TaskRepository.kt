@@ -1,13 +1,14 @@
 package com.example.dailytaskplanner.database
 
 import com.example.dailytaskplanner.model.Task
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class TaskRepository @Inject constructor(
     private val taskDao: TaskDao
 ) {
-    suspend fun getAllTasks(): MutableList<Task> {
-        return taskDao.getAll()
+    suspend fun getAllTasks(): Flow<MutableList<Task>> {
+        return taskDao.getAllTask()
     }
 
     suspend fun addTask(task: Task) {

@@ -7,6 +7,7 @@ import androidx.fragment.app.FragmentActivity
 import com.example.dailytaskplanner.R
 import com.example.dailytaskplanner.adapter.MainPagerAdapter
 import com.example.dailytaskplanner.databinding.ActivityMainBinding
+import com.example.dailytaskplanner.utils.AppUtils
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -18,9 +19,9 @@ class MainActivity : FragmentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        AppUtils.startTaskService()
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         setContentView(binding.root)
-
         setUpViewPager()
         setUpBottomNavigation()
     }
