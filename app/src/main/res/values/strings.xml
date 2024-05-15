@@ -2,4 +2,5 @@
     <string name="app_name">DailyTaskPlanner</string>
     <string name="title_home">Home</string>
     <string name="title_profile">Profile</string>
+    <string name="titlte_task">Họp daily hàng ngày</string>
 </resources>

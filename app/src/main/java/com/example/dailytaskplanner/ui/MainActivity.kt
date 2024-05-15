@@ -1,16 +1,20 @@
 package com.example.dailytaskplanner.ui
 
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.FragmentActivity
 import com.example.dailytaskplanner.R
 import com.example.dailytaskplanner.adapter.MainPagerAdapter
 import com.example.dailytaskplanner.databinding.ActivityMainBinding
+import dagger.hilt.android.AndroidEntryPoint
 
 
+@AndroidEntryPoint
 class MainActivity : FragmentActivity() {
 
     private lateinit var binding: ActivityMainBinding
+    private val viewModel : MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
