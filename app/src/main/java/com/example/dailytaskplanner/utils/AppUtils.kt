@@ -1,8 +1,12 @@
 package com.example.dailytaskplanner.utils
 
 import android.content.Intent
+import android.os.Build
+import androidx.annotation.RequiresApi
 import com.example.dailytaskplanner.App
 import com.example.dailytaskplanner.service.ForegroundService
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import kotlin.math.floor
 
 object AppUtils {
@@ -24,4 +28,12 @@ object AppUtils {
             )
         )
     }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun formatDate(dateString: String): String {
+        val inputDate = LocalDate.parse(dateString)
+        val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+        return inputDate.format(formatter)
+    }
+
 }

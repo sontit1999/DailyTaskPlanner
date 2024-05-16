@@ -2,6 +2,7 @@ package com.example.dailytaskplanner.ui.dialog
 
 import android.app.Dialog
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -10,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
@@ -192,6 +194,8 @@ class AddTaskDialog : DialogFragment() {
             .darkModeEnabled(false)
             .listener(object : DatePickerPopup.DateSelectListener {
 
+
+                @RequiresApi(Build.VERSION_CODES.O)
                 override fun onDateSelected(
                     dp: com.ozcanalasalvar.datepicker.view.datepicker.DatePicker?,
                     date: Long,

@@ -3,11 +3,9 @@ package com.example.dailytaskplanner.custom
 import android.content.Context
 import android.util.AttributeSet
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.content.withStyledAttributes
 import androidx.recyclerview.widget.RecyclerView
 import com.example.dailytaskplanner.R
-
 import java.time.DayOfWeek
 import java.time.LocalDate
 
@@ -382,7 +380,7 @@ open class WeekCalendarView : RecyclerView {
      * @param endDate A date in the last week on the calendar.
      * @param firstDayOfWeek A [DayOfWeek] to be the first day of week.
      */
-    fun setup(startDate: LocalDate, endDate: LocalDate, firstDayOfWeek: DayOfWeek) {
+    fun setup(startDate: LocalDate, endDate: LocalDate, firstDayOfWeek: DayOfWeek,onClickListener: (WeekDay) -> Unit) {
         checkDateRange(startDate = startDate, endDate = endDate)
         this.startDate = startDate
         this.endDate = endDate
@@ -397,9 +395,7 @@ open class WeekCalendarView : RecyclerView {
             startDate = startDate,
             endDate = endDate,
             firstDayOfWeek = firstDayOfWeek,
-            onClickListener = {
-                Toast.makeText(context,it.date.toString(),Toast.LENGTH_LONG).show()
-            }
+            onClickListener = onClickListener
         )
     }
 

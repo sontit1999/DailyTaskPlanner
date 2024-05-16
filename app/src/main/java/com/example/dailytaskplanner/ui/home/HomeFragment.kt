@@ -2,6 +2,7 @@ package com.example.dailytaskplanner.ui.home
 
 import android.os.Build
 import android.view.View
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
@@ -19,6 +20,7 @@ import com.example.dailytaskplanner.databinding.Example7CalendarDayBinding
 import com.example.dailytaskplanner.databinding.FragHomeBinding
 import com.example.dailytaskplanner.ui.dialog.AddTaskDialog
 import com.example.dailytaskplanner.ui.home.adapter.TaskAdapter
+import com.example.dailytaskplanner.utils.AppUtils
 import com.example.dailytaskplanner.utils.setSafeOnClickListener
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.LocalDate
@@ -97,6 +99,9 @@ class HomeFragment : BaseFragment<FragHomeBinding, HomeViewModel>() {
             currentMonth.minusMonths(5).atStartOfMonth(),
             currentMonth.plusMonths(5).atEndOfMonth(),
             firstDayOfWeekFromLocale(),
+            onClickListener = {
+                Toast.makeText(context, AppUtils.formatDate(it.date.toString()), Toast.LENGTH_SHORT).show()
+            }
         )
        binding.calendarView.scrollToDate(LocalDate.now())
     }
