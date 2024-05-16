@@ -22,7 +22,7 @@ class AddTaskViewModel @Inject constructor(
     var task = Task(
         0,
         R.drawable.icon_task,
-        "",
+        "#CCFFFF",
         "",
         "",
         "",

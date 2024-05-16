@@ -6,6 +6,33 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvMonthYear"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/color_main"
+            android:paddingVertical="10dp"
+            android:text="July 2024"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.example.dailytaskplanner.custom.WeekCalendarView
+            android:id="@+id/calendarView"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:background="@color/color_main"
+            app:cv_daySize="seventhWidth"
+            app:cv_dayViewResource="@layout/example_7_calendar_day"
+            app:cv_orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvMonthYear" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvTask"
             android:layout_width="match_parent"
@@ -13,15 +40,15 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/calendarView" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/btnAdd"
             android:layout_width="49dp"
-            app:backgroundTint="@color/color_main"
             android:layout_height="49dp"
             android:layout_margin="15dp"
             android:src="@drawable/baseline_playlist_add_24"
+            app:backgroundTint="@color/color_main"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>

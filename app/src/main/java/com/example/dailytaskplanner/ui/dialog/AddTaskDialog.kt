@@ -9,7 +9,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
-import android.widget.DatePicker
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
@@ -18,7 +17,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.dailytaskplanner.R
 import com.example.dailytaskplanner.adapter.ChooseColorAdapter
 import com.example.dailytaskplanner.databinding.DialogAddTaskBinding
-import com.example.dailytaskplanner.model.SubTask
 import com.example.dailytaskplanner.model.Task
 import com.example.dailytaskplanner.utils.setSafeOnClickListener
 import com.google.android.material.timepicker.TimeFormat
@@ -28,9 +26,7 @@ import com.ozcanalasalvar.datepicker.view.popup.DatePickerPopup
 import com.ozcanalasalvar.datepicker.view.popup.TimePickerPopup
 import com.ozcanalasalvar.datepicker.view.timepicker.TimePicker
 import dagger.hilt.android.AndroidEntryPoint
-import java.time.LocalTime
 import java.util.Calendar
-import kotlin.random.Random
 
 @AndroidEntryPoint
 class AddTaskDialog : DialogFragment() {
@@ -39,9 +35,9 @@ class AddTaskDialog : DialogFragment() {
 
     private val viewModel: AddTaskViewModel by viewModels()
 
-    lateinit var chooseColorAdapter: ChooseColorAdapter
+    private lateinit var chooseColorAdapter: ChooseColorAdapter
 
-    var taskEdit: Task? = null
+    private var taskEdit: Task? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
