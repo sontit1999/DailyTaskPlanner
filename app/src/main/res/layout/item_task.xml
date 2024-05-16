@@ -33,7 +33,7 @@
                 android:text="@string/titlte_task"
                 android:textColor="@color/black"
                 android:textSize="14sp"
-                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@+id/icon"
                 app:layout_constraintEnd_toStartOf="@+id/cbDone"
                 app:layout_constraintStart_toEndOf="@+id/icon"
                 app:layout_constraintTop_toTopOf="@+id/icon" />

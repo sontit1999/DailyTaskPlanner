@@ -32,14 +32,14 @@ class HomeFragment : BaseFragment<FragHomeBinding, HomeViewModel>() {
 
     override fun bindingAction() {
         binding.btnAdd.setSafeOnClickListener {
-            AddTaskDialog.newInstance().show(childFragmentManager, AddTaskDialog.TAG)
+            AddTaskDialog.newInstance(null).show(childFragmentManager, AddTaskDialog.TAG)
         }
     }
 
     private fun initRvTask() {
         adapterTask = TaskAdapter()
         adapterTask.onClickItem = {
-            Toast.makeText(context, it.title, Toast.LENGTH_SHORT).show()
+            AddTaskDialog.newInstance(it).show(childFragmentManager, AddTaskDialog.TAG)
         }
         adapterTask.onClickCheckbox = {
             it.isCompleted = !it.isCompleted

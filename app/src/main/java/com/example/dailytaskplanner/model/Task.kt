@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "task")
 data class Task(
-    @PrimaryKey val id: Long,
+    @PrimaryKey var id: Long,
     var icon : Int,
     var color : String,
     var title: String,

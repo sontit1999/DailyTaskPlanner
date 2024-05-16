@@ -5,4 +5,10 @@
     <string name="titlte_task">Họp daily hàng ngày</string>
     <string name="create">Create</string>
     <string name="new_task">New task .....</string>
+    <string name="today">Today</string>
+    <string name="time">Time</string>
+    <string name="reminder">Reminder</string>
+    <string name="no_tag">No tag</string>
+    <string name="desscription">Desscription here ...</string>
+    <string name="update">Update</string>
 </resources>

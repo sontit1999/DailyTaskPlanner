@@ -2,6 +2,7 @@ package com.example.dailytaskplanner.ui.dialog
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.example.dailytaskplanner.R
 import com.example.dailytaskplanner.base.BaseViewModel
 import com.example.dailytaskplanner.database.TaskRepository
 import com.example.dailytaskplanner.model.ColorTask
@@ -18,7 +19,20 @@ class AddTaskViewModel @Inject constructor(
 ) : BaseViewModel() {
 
     var listColorLiveData = MutableLiveData<MutableList<ColorTask>>()
-    var colorSelected = ""
+    var task = Task(
+        0,
+        R.drawable.icon_task,
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        false,
+        false,
+        "",
+        ""
+    )
 
     init {
         val listColor = mutableListOf<ColorTask>()
@@ -36,11 +50,12 @@ class AddTaskViewModel @Inject constructor(
         listColorLiveData.value = listColor
     }
 
-    fun addTask(task: Task) {
+    fun addTask() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
+                task.id = System.currentTimeMillis()
                 taskRepository.addTask(task)
-                Logger.d(TAG, "Task added successfully")
+                Logger.d(TAG, "Task added successfully: $task")
             } catch (e: Exception) {
                 Logger.e(TAG, "Error adding task: ${e.message}")
             }
