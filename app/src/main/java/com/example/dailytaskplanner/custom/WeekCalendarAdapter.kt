@@ -77,7 +77,7 @@ internal class WeekCalendarAdapter(
         if (payloads.isEmpty()) {
             super.onBindViewHolder(holder, position, payloads)
         } else {
-            if (payloads.size >= 2) {
+            if (payloads.isNotEmpty()) {
                 onClickListener.invoke(payloads.first() as WeekDay)
             }
             payloads.forEach {

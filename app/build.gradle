@@ -99,6 +99,10 @@ dependencies {
     implementation 'com.github.ozcanalasalvar.picker:datepicker:2.0.7'
     implementation 'com.github.ozcanalasalvar.picker:wheelview:2.0.7'
     kapt "org.jetbrains.kotlinx:kotlinx-metadata-jvm:0.4.2"
+
+    implementation 'org.greenrobot:eventbus:3.3.1'
+    //Lottie
+    implementation "com.airbnb.android:lottie:6.3.0"
 }
 
 kapt {

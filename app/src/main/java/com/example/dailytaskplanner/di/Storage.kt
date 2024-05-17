@@ -3,10 +3,10 @@ package com.example.dailytaskplanner.di
 
 import android.content.Context
 import androidx.room.Room
-import androidx.room.migration.Migration
-import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.dailytaskplanner.database.AppDatabase
 import com.example.dailytaskplanner.database.TaskDao
+import com.example.dailytaskplanner.database.storage.LocalStorage
+import com.example.dailytaskplanner.database.storage.SharedPreferencesStorage
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -19,6 +19,10 @@ import javax.inject.Singleton
 object Storage {
 
     const val dbName = "daily_task_planner.db"
+
+    @Singleton
+    @Provides
+    fun localStorage(pre: SharedPreferencesStorage): LocalStorage = pre
 
     @Singleton
     @Provides

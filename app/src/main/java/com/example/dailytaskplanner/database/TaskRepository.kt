@@ -11,7 +11,12 @@ class TaskRepository @Inject constructor(
         return taskDao.getAllTask()
     }
 
+    suspend fun getTasksByDate(dateInput: String) : MutableList<Task> {
+        return taskDao.getTasksByDate(dateInput)
+    }
+
     suspend fun addTask(task: Task) {
+        task.lastTimeModified = System.currentTimeMillis()
         taskDao.insertAll(task)
     }
 
@@ -20,6 +25,7 @@ class TaskRepository @Inject constructor(
     }
 
     suspend fun updateTask(task: Task) {
+        task.lastTimeModified = System.currentTimeMillis()
         taskDao.updateUsers(task)
     }
 }

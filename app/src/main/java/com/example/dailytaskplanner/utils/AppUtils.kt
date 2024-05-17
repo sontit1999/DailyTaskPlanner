@@ -3,10 +3,14 @@ package com.example.dailytaskplanner.utils
 import android.content.Intent
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.fragment.app.Fragment
 import com.example.dailytaskplanner.App
 import com.example.dailytaskplanner.service.ForegroundService
+import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import java.util.Date
+import java.util.Locale
 import kotlin.math.floor
 
 object AppUtils {
@@ -34,6 +38,37 @@ object AppUtils {
         val inputDate = LocalDate.parse(dateString)
         val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
         return inputDate.format(formatter)
+    }
+
+    fun formatLongToDateString(dateInLong: Long): String {
+        return try {
+            val simpleDateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+            val date = Date(dateInLong)
+            simpleDateFormat.format(date)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date())
+        }
+    }
+
+    fun getCurrentDate(): String {
+        return SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date())
+    }
+
+    fun Fragment.hiddenKeyboard(){
+        val imm = requireActivity().getSystemService(android.content.Context.INPUT_METHOD_SERVICE) as android.view.inputmethod.InputMethodManager
+        imm.hideSoftInputFromWindow(requireView().windowToken, 0)
+    }
+
+    fun String.toTimeString(): String? {
+        return try {
+            val sdf = SimpleDateFormat("HH:mm", Locale.getDefault())
+            val date = sdf.parse(this)
+            SimpleDateFormat("hh:mm a", Locale.getDefault()).format(date)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
     }
 
 }

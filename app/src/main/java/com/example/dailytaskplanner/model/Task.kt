@@ -13,6 +13,8 @@ data class Task(
     var category: String,
     var dateStart: String,
     var timeStart: String,
+    var dateCreated: String,
+    var lastTimeModified: Long,
     var isCompleted: Boolean,
     var isReminder: Boolean,
     var timeReminder : String,

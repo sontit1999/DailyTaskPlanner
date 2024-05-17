@@ -6,14 +6,25 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.dailytaskplanner.App
+import com.example.dailytaskplanner.R
 import com.example.dailytaskplanner.databinding.ItemTaskBinding
 import com.example.dailytaskplanner.model.Task
+import com.example.dailytaskplanner.utils.AppUtils.toTimeString
 import com.example.dailytaskplanner.utils.setSafeOnClickListener
 
 class TaskAdapter : ListAdapter<Task, TaskAdapter.TaskViewHolder>(TaskDiffCallback()) {
 
     var onClickItem: ((Task) -> Unit)? = null
     var onClickCheckbox: ((Task) -> Unit)? = null
+
+
+    fun removeItem(position: Int) {
+        val task = getItem(position)
+        val list = currentList.toMutableList()
+        list.remove(task)
+        submitList(list)
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskViewHolder {
         return TaskViewHolder(
@@ -52,6 +63,8 @@ class TaskAdapter : ListAdapter<Task, TaskAdapter.TaskViewHolder>(TaskDiffCallba
                 binding.container.setCardBackgroundColor(Color.parseColor("#99FFFF"))
             }
             binding.tvTitle.text = task.title
+            binding.tvTimeStart.text =
+                if (task.timeStart == "00:00") App.mInstance.getString(R.string.all_time) else task.timeStart.toTimeString()
             binding.cbDone.isChecked = task.isCompleted
         }
     }

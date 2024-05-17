@@ -20,6 +20,8 @@ import com.example.dailytaskplanner.R
 import com.example.dailytaskplanner.adapter.ChooseColorAdapter
 import com.example.dailytaskplanner.databinding.DialogAddTaskBinding
 import com.example.dailytaskplanner.model.Task
+import com.example.dailytaskplanner.utils.AppUtils
+import com.example.dailytaskplanner.utils.AppUtils.hiddenKeyboard
 import com.example.dailytaskplanner.utils.setSafeOnClickListener
 import com.google.android.material.timepicker.TimeFormat
 import com.google.gson.Gson
@@ -85,14 +87,14 @@ class AddTaskDialog : DialogFragment() {
     private fun initData() {
         taskEdit?.let {
             if (it.color.isNotEmpty()) {
-                binding.container.setBackgroundColor(Color.parseColor(it.color))
+                binding.nestedScrollView.setBackgroundColor(Color.parseColor(it.color))
             }
             if (it.dateStart.isNotEmpty()) {
                 binding.tvDate.text = it.dateStart
             }
-            if (it.timeStart.isNotEmpty()) {
+            if (it.timeStart.isNotEmpty() && it.timeStart != "00:00") {
                 binding.tvTimne.text = it.timeStart
-            }
+            } else binding.tvTimne.text = getString(R.string.all_time)
             if (it.title.isNotEmpty()) {
                 binding.edtTitleTask.setText(it.title)
             }
@@ -109,13 +111,17 @@ class AddTaskDialog : DialogFragment() {
         viewModel.listColorLiveData.observe(viewLifecycleOwner) {
             chooseColorAdapter.submitList(it)
         }
+
+        viewModel.showToastLiveData.observe(viewLifecycleOwner) {
+            Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun initRecyclerView() {
         chooseColorAdapter = ChooseColorAdapter()
         chooseColorAdapter.onClickItem = {
             viewModel.task.color = it.color
-            binding.container.setBackgroundColor(Color.parseColor(it.color))
+            binding.nestedScrollView.setBackgroundColor(Color.parseColor(it.color))
         }
         binding.rvColor.adapter = chooseColorAdapter
         binding.rvColor.layoutManager =
@@ -123,11 +129,15 @@ class AddTaskDialog : DialogFragment() {
     }
 
     private fun bindingAction() {
-        binding.ivTime.setSafeOnClickListener {
+        binding.container.setSafeOnClickListener {
+            hiddenKeyboard()
+        }
+
+        binding.btnChooseTime.setSafeOnClickListener {
             showTimePicker()
         }
 
-        binding.ivDate.setSafeOnClickListener {
+        binding.btnChooseDate.setSafeOnClickListener {
             showDatePicker()
         }
 
@@ -203,9 +213,9 @@ class AddTaskDialog : DialogFragment() {
                     month: Int,
                     year: Int
                 ) {
-                    binding.tvDate.text = "$day/$month/$year"
-                    viewModel.task.dateStart = "$day/$month/$year"
-                    Toast.makeText(context, "$day/$month/$year", Toast.LENGTH_SHORT).show()
+                    val dateString = AppUtils.formatLongToDateString(date)
+                    binding.tvDate.text = dateString
+                    viewModel.task.dateStart = dateString
                 }
             })
             .build()

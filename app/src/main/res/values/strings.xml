@@ -11,4 +11,10 @@
     <string name="no_tag">No tag</string>
     <string name="desscription">Desscription here ...</string>
     <string name="update">Update</string>
+    <string name="task_updated">Task updated successfully</string>
+    <string name="task_deleted">Task deleted successfully</string>
+    <string name="add_task_success">Task added successfully</string>
+    <string name="all_time">All time</string>
+    <string name="congratulation_done_task">Congratulations on completing all the task. Keep it up</string>
+    <string name="no_task">No task for selected date! Add now</string>
 </resources>

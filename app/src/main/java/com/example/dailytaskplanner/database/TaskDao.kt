@@ -15,6 +15,9 @@ interface TaskDao {
     @Query("SELECT * FROM task")
     fun getAllTask(): Flow<MutableList<Task>>
 
+    @Query("SELECT * FROM task WHERE dateStart = :dateInput")
+    suspend fun getTasksByDate(dateInput: String): MutableList<Task>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(vararg tasks: Task)
 

@@ -1,13 +1,16 @@
 package com.example.dailytaskplanner.ui.home
 
 import android.os.Build
+import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.dailytaskplanner.R
+import com.example.dailytaskplanner.adapter.CustomItemTouchHelperCallback
 import com.example.dailytaskplanner.base.BaseFragment
 import com.example.dailytaskplanner.custom.ViewContainer
 import com.example.dailytaskplanner.custom.WeekDay
@@ -18,11 +21,14 @@ import com.example.dailytaskplanner.custom.firstDayOfWeekFromLocale
 import com.example.dailytaskplanner.custom.getWeekPageTitle
 import com.example.dailytaskplanner.databinding.Example7CalendarDayBinding
 import com.example.dailytaskplanner.databinding.FragHomeBinding
+import com.example.dailytaskplanner.model.eventbus.RefreshDataTask
 import com.example.dailytaskplanner.ui.dialog.AddTaskDialog
 import com.example.dailytaskplanner.ui.home.adapter.TaskAdapter
 import com.example.dailytaskplanner.utils.AppUtils
 import com.example.dailytaskplanner.utils.setSafeOnClickListener
 import dagger.hilt.android.AndroidEntryPoint
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
 import java.time.LocalDate
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
@@ -36,15 +42,22 @@ class HomeFragment : BaseFragment<FragHomeBinding, HomeViewModel>() {
     @RequiresApi(Build.VERSION_CODES.O)
     private var selectedDate = LocalDate.now()
 
+    private var selectedDateString = AppUtils.getCurrentDate()
+
     @RequiresApi(Build.VERSION_CODES.O)
     private val dateFormatter = DateTimeFormatter.ofPattern("dd")
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        EventBus.getDefault().register(this)
+    }
 
     override fun getLayoutId() = R.layout.frag_home
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun viewCreated() {
         initRvTask()
-        viewModel.getAllTasks()
+        viewModel.getTaskByDate(AppUtils.getCurrentDate())
         initCalender()
     }
 
@@ -100,25 +113,74 @@ class HomeFragment : BaseFragment<FragHomeBinding, HomeViewModel>() {
             currentMonth.plusMonths(5).atEndOfMonth(),
             firstDayOfWeekFromLocale(),
             onClickListener = {
-                Toast.makeText(context, AppUtils.formatDate(it.date.toString()), Toast.LENGTH_SHORT).show()
+                selectedDateString = it.date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+                viewModel.getTaskByDate(selectedDateString)
             }
         )
-       binding.calendarView.scrollToDate(LocalDate.now())
+        binding.calendarView.scrollToDate(LocalDate.now())
     }
 
     override fun observersSomething() {
         viewModel.listTaskLiveData.observe(viewLifecycleOwner) {
+            if (it.isEmpty()) {
+                showEmptyView(true)
+            } else {
+                showEmptyView(false)
+            }
             adapterTask.submitList(it)
+        }
+
+        viewModel.showToastLiveData.observe(viewLifecycleOwner) {
+            showToast(it)
+        }
+
+        viewModel.statusDoneAllTaskLiveData.observe(viewLifecycleOwner) {
+            if(it) {
+                Toast.makeText(context, getString(R.string.congratulation_done_task), Toast.LENGTH_SHORT).show()
+                binding.lavCongratulation.isVisible = true
+                binding.lavCongratulation.playAnimation()
+            }
         }
     }
 
+    private fun showEmptyView(isShown: Boolean = true) {
+        if(isShown) {
+            binding.emptyView.visibility = View.VISIBLE
+            binding.lavEmpty.visibility = View.VISIBLE
+            binding.lavEmpty.playAnimation()
+        } else {
+            binding.emptyView.visibility = View.GONE
+            binding.lavEmpty.visibility = View.GONE
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun bindingAction() {
         binding.btnAdd.setSafeOnClickListener {
             AddTaskDialog.newInstance(null).show(childFragmentManager, AddTaskDialog.TAG)
         }
+
+        binding.tvToday.setSafeOnClickListener {
+            binding.calendarView.smoothScrollToDate(LocalDate.now())
+        }
     }
 
     private fun initRvTask() {
+        val callback = CustomItemTouchHelperCallback(object :
+            CustomItemTouchHelperCallback.ItemTouchHelperListener {
+            override fun onItemMove(fromPosition: Int, toPosition: Int) {
+                // Handle item move event
+                adapterTask.notifyItemMoved(fromPosition, toPosition)
+            }
+
+            override fun onItemSwipe(position: Int) {
+                // Handle item swipe event
+                adapterTask.removeItem(position)
+                viewModel.deleteTask(adapterTask.currentList[position])
+            }
+        })
+        val itemTouchHelper = ItemTouchHelper(callback)
+        itemTouchHelper.attachToRecyclerView(binding.rvTask)
         adapterTask = TaskAdapter()
         adapterTask.onClickItem = {
             AddTaskDialog.newInstance(it).show(childFragmentManager, AddTaskDialog.TAG)
@@ -132,4 +194,13 @@ class HomeFragment : BaseFragment<FragHomeBinding, HomeViewModel>() {
             LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
     }
 
+    @Subscribe
+    fun refreshData(event: RefreshDataTask) {
+        viewModel.getTaskByDate(selectedDateString)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        EventBus.getDefault().unregister(this)
+    }
 }
