@@ -23,12 +23,15 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
 @AndroidEntryPoint
 class ForegroundService : Service() {
+
+    private var isServiceRunning = false
 
     @Inject
     lateinit var taskRepository: TaskRepository
@@ -106,8 +109,23 @@ class ForegroundService : Service() {
 
         registerEventUser()
 
+        scheduleCheckTask()
         // Keep the service alive
         return START_STICKY
+    }
+
+    private fun scheduleCheckTask() {
+        serviceScope.launch(Dispatchers.IO) {
+            if (isServiceRunning) {
+                Logger.d(TAG, "----> Return because service is running")
+                return@launch
+            }
+            isServiceRunning = true
+            while (true) {
+                Logger.d(TAG, "----> schedule CheckTask every 10s")
+                delay(60000 * 10)
+            }
+        }
     }
 
     private fun registerEventUser() {
@@ -120,6 +138,7 @@ class ForegroundService : Service() {
     override fun onDestroy() {
         super.onDestroy()
         serviceScope.cancel()
+        isServiceRunning = false
         unregisterReceiver(broadcastReceiver)
         Logger.d(TAG, "Service destroyed")
     }

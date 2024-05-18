@@ -5,9 +5,11 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import com.example.dailytaskplanner.App
 import com.example.dailytaskplanner.R
+import com.example.dailytaskplanner.service.worker.NotificationWorker
 
 object NotificationUtils {
 
@@ -47,5 +49,10 @@ object NotificationUtils {
             channel.description = CHANNEL_DESCRIPTION
             notificationManager.createNotificationChannel(channel)
         }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun scheduleReminderNotification(context: Context) {
+        NotificationWorker.scheduleNotification(context)
     }
 }

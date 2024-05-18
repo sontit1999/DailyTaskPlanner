@@ -1,13 +1,16 @@
 package com.example.dailytaskplanner.ui
 
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.FragmentActivity
 import com.example.dailytaskplanner.R
 import com.example.dailytaskplanner.adapter.MainPagerAdapter
 import com.example.dailytaskplanner.databinding.ActivityMainBinding
 import com.example.dailytaskplanner.utils.AppUtils
+import com.example.dailytaskplanner.utils.NotificationUtils
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -49,5 +52,10 @@ class MainActivity : FragmentActivity() {
         binding.viewPager.adapter = MainPagerAdapter(this)
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun onPause() {
+        super.onPause()
+        NotificationUtils.scheduleReminderNotification(this)
+    }
 
 }
