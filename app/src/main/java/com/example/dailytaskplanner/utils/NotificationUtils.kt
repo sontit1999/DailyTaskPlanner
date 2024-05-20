@@ -55,4 +55,8 @@ object NotificationUtils {
     fun scheduleReminderNotification(context: Context) {
         NotificationWorker.scheduleNotification(context)
     }
+
+    fun cancelReminderNotification(context: Context) {
+        NotificationWorker.cancel(context)
+    }
 }

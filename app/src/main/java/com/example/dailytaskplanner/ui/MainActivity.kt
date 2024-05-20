@@ -58,4 +58,9 @@ class MainActivity : FragmentActivity() {
         NotificationUtils.scheduleReminderNotification(this)
     }
 
+    override fun onResume() {
+        super.onResume()
+        NotificationUtils.cancelReminderNotification(this)
+    }
+
 }
