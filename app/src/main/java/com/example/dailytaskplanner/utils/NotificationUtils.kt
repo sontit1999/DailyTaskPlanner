@@ -10,6 +10,7 @@ import androidx.core.app.NotificationCompat
 import com.example.dailytaskplanner.App
 import com.example.dailytaskplanner.R
 import com.example.dailytaskplanner.service.worker.NotificationWorker
+import com.example.dailytaskplanner.service.worker.SaturdayWorker
 
 object NotificationUtils {
 
@@ -54,9 +55,11 @@ object NotificationUtils {
     @RequiresApi(Build.VERSION_CODES.O)
     fun scheduleReminderNotification(context: Context) {
         NotificationWorker.scheduleNotification(context)
+        SaturdayWorker.scheduleNotification(context)
     }
 
     fun cancelReminderNotification(context: Context) {
         NotificationWorker.cancel(context)
+        SaturdayWorker.cancel(context)
     }
 }

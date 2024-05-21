@@ -8,14 +8,17 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.os.Build
 import android.os.IBinder
 import android.widget.RemoteViews
+import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import com.example.dailytaskplanner.R
 import com.example.dailytaskplanner.database.TaskRepository
 import com.example.dailytaskplanner.database.storage.LocalStorage
 import com.example.dailytaskplanner.ui.MainActivity
 import com.example.dailytaskplanner.utils.AppUtils
+import com.example.dailytaskplanner.utils.AppUtils.calculateTimeRemaining
 import com.example.dailytaskplanner.utils.Logger
 import com.example.dailytaskplanner.utils.NotificationUtils
 import dagger.hilt.android.AndroidEntryPoint
@@ -43,6 +46,7 @@ class ForegroundService : Service() {
 
     private val broadcastReceiver = object : BroadcastReceiver() {
 
+        @RequiresApi(Build.VERSION_CODES.O)
         override fun onReceive(context: Context, intent: Intent) {
             Logger.d(TAG, "----> onReceive action: ${intent.action}")
             if (intent.action == Intent.ACTION_SCREEN_ON) {
@@ -53,14 +57,17 @@ class ForegroundService : Service() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun checkStatusTask() {
         serviceScope.launch {
             val listTask = taskRepository.getTasksByDate(AppUtils.getCurrentDate())
             listTask.forEach {
                 if (!it.isCompleted) {
+                    val timeRemaining = it.timeStart.calculateTimeRemaining()
+                    val msg = if(timeRemaining > 0) "task ${it.title} Con lai ${timeRemaining} phut la den han" else "task ${it.title} Da qua thoi gian $timeRemaining phut"
                     NotificationUtils.showNotification(
                         "Task Reminder",
-                        "Task ${it.title} is not done",
+                        msg,
                         PendingIntent.getActivity(
                             this@ForegroundService,
                             0,
@@ -68,7 +75,7 @@ class ForegroundService : Service() {
                             PendingIntent.FLAG_IMMUTABLE
                         )
                     )
-                    Logger.d(TAG, "---> Task ${it.title} is not done")
+                    Logger.d(TAG, "---> Task ${it.title} is not done time remain = " + it.timeStart)
                 } else {
                     Logger.d(TAG, "---> Task ${it.title} is done")
                 }

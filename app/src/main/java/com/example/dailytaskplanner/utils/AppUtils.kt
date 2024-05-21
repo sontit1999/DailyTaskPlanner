@@ -7,7 +7,9 @@ import androidx.fragment.app.Fragment
 import com.example.dailytaskplanner.App
 import com.example.dailytaskplanner.service.ForegroundService
 import java.text.SimpleDateFormat
+import java.time.Duration
 import java.time.LocalDate
+import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.util.Date
 import java.util.Locale
@@ -69,6 +71,17 @@ object AppUtils {
             e.printStackTrace()
             null
         }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun String.calculateTimeRemaining(): Int {
+        val formatter = DateTimeFormatter.ofPattern("H:mm")
+        val givenTime = LocalTime.parse(this, formatter)
+        val currentTime = LocalTime.now()
+
+        val duration = Duration.between(currentTime, givenTime)
+
+        return (duration.seconds / 60).toInt()
     }
 
 }
