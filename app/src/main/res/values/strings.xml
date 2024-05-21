@@ -17,4 +17,14 @@
     <string name="all_time">All time</string>
     <string name="congratulation_done_task">Congratulations on completing all the task. Keep it up</string>
     <string name="no_task">No task for selected date! Add now</string>
+    <string name="policy">Privacy Policy</string>
+    <string name="notify_app">Notification</string>
+    <string name="time_reminder_create_plan">Time remind new plan</string>
+    <string name="summary">Summary</string>
+    <string name="statical">Statistical</string>
+    <string name="remind_task">Remind task before 10m</string>
+    <string name="setting">Setting</string>
+    <string name="remind_task_start_after"> minutes to start</string>
+    <string name="effective_plan">Effective planning</string>
+    <string name="effective_plan_des">Take some time to plan for today!</string>
 </resources>

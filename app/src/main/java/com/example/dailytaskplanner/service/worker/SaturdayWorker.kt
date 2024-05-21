@@ -6,6 +6,7 @@ import android.content.Intent
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.work.Constraints
+import java.time.Duration
 import androidx.work.CoroutineWorker
 import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
@@ -47,7 +48,7 @@ class SaturdayWorker(private val appContext: Context, workerParams: WorkerParame
         val notificationWork =
             OneTimeWorkRequestBuilder<SaturdayWorker>()
                 .setInitialDelay(
-                   /* Duration.between(LocalDateTime.now(), nextTimeNotify).seconds*/20,
+                    Duration.between(LocalDateTime.now(), nextTimeNotify).seconds,
                     TimeUnit.SECONDS
                 )
                 .setConstraints(
@@ -101,7 +102,7 @@ class SaturdayWorker(private val appContext: Context, workerParams: WorkerParame
             val notificationWork =
                 OneTimeWorkRequestBuilder<SaturdayWorker>() // Flex interval is set to 15 minutes
                     .setInitialDelay(
-                        /*Duration.between(LocalDateTime.now(), nextTime).seconds*/20,
+                        Duration.between(LocalDateTime.now(), nextTime).seconds,
                         TimeUnit.SECONDS
                     )
                     .setConstraints(

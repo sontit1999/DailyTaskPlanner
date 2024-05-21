@@ -157,7 +157,7 @@ class HomeFragment : BaseFragment<FragHomeBinding, HomeViewModel>() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun bindingAction() {
         binding.btnAdd.setSafeOnClickListener {
-            AddTaskDialog.newInstance(null).show(childFragmentManager, AddTaskDialog.TAG)
+            AddTaskDialog.newInstance(null,selectedDateString).show(childFragmentManager, AddTaskDialog.TAG)
         }
 
         binding.tvToday.setSafeOnClickListener {

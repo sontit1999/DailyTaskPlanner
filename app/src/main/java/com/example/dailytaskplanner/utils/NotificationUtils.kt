@@ -24,7 +24,8 @@ object NotificationUtils {
     fun showNotification(
         title: String,
         content: String,
-        pendingIntent: PendingIntent
+        pendingIntent: PendingIntent,
+        id: Int = System.currentTimeMillis().toInt()
     ) {
         createNotificationChannel()
 
@@ -34,10 +35,11 @@ object NotificationUtils {
             .setContentText(content)
             .setSmallIcon(R.drawable.icon_task)
             .setContentIntent(pendingIntent)
+            .setAutoCancel(true)
             .build()
 
         // Show the notification
-        notificationManager.notify(System.currentTimeMillis().toInt(), notification)
+        notificationManager.notify(id, notification)
     }
 
     fun createNotificationChannel() {

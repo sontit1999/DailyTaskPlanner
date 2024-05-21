@@ -75,6 +75,7 @@ object AppUtils {
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun String.calculateTimeRemaining(): Int {
+        if(this == "00:00") return 0
         val formatter = DateTimeFormatter.ofPattern("H:mm")
         val givenTime = LocalTime.parse(this, formatter)
         val currentTime = LocalTime.now()

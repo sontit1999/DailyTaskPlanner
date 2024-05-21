@@ -7,7 +7,7 @@
         android:id="@+id/nestedScrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#A6EFF8">
+        android:background="#F0F5F6">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/container"

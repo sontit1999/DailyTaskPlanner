@@ -42,14 +42,19 @@ class AddTaskDialog : DialogFragment() {
     private lateinit var chooseColorAdapter: ChooseColorAdapter
 
     private var taskEdit: Task? = null
+    private var dateCreateTask = AppUtils.getCurrentDate()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
             val task = Gson().fromJson(it.getString(KEY_TASK), Task::class.java)
+            dateCreateTask = it.getString(KEY_DATE,"")
             task?.let {
                 taskEdit = it
                 viewModel.task = it
+            }
+            if (dateCreateTask.isNotEmpty()) {
+                viewModel.task.dateStart = dateCreateTask
             }
         }
     }
@@ -105,6 +110,8 @@ class AddTaskDialog : DialogFragment() {
             binding.swReminder.isChecked = it.isReminder
             binding.tvCreate.text = getString(R.string.update)
         }
+
+        binding.tvDate.text = viewModel.task.dateStart
     }
 
     private fun setUpObserver() {
@@ -129,6 +136,8 @@ class AddTaskDialog : DialogFragment() {
     }
 
     private fun bindingAction() {
+        binding.edtTitleTask.requestFocus()
+
         binding.container.setSafeOnClickListener {
             hiddenKeyboard()
         }
@@ -258,12 +267,14 @@ class AddTaskDialog : DialogFragment() {
     companion object {
 
         private const val KEY_TASK = "task"
+        private const val KEY_DATE = "date"
         const val TAG = "AddTaskDialog"
 
-        fun newInstance(task: Task?): AddTaskDialog {
+        fun newInstance(task: Task?,dateStart : String = ""): AddTaskDialog {
             val dialog = AddTaskDialog()
             val bundle = Bundle()
             bundle.putString(KEY_TASK, Gson().toJson(task))
+            bundle.putString(KEY_DATE,dateStart)
             dialog.arguments = bundle
             return dialog
         }

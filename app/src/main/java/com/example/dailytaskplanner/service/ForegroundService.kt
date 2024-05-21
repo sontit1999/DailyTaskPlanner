@@ -52,7 +52,7 @@ class ForegroundService : Service() {
             if (intent.action == Intent.ACTION_SCREEN_ON) {
                 // The screen has turned on
                 // Do something here, such as start an activity
-                checkStatusTask()
+                // checkStatusTask()
             }
         }
     }
@@ -61,39 +61,45 @@ class ForegroundService : Service() {
     private fun checkStatusTask() {
         serviceScope.launch {
             val listTask = taskRepository.getTasksByDate(AppUtils.getCurrentDate())
-            listTask.forEach {
-                if (!it.isCompleted) {
-                    val timeRemaining = it.timeStart.calculateTimeRemaining()
-                    val msg = if(timeRemaining > 0) "task ${it.title} Con lai ${timeRemaining} phut la den han" else "task ${it.title} Da qua thoi gian $timeRemaining phut"
-                    NotificationUtils.showNotification(
-                        "Task Reminder",
-                        msg,
-                        PendingIntent.getActivity(
-                            this@ForegroundService,
-                            0,
-                            Intent(this@ForegroundService, MainActivity::class.java),
-                            PendingIntent.FLAG_IMMUTABLE
-                        )
-                    )
-                    Logger.d(TAG, "---> Task ${it.title} is not done time remain = " + it.timeStart)
-                } else {
-                    Logger.d(TAG, "---> Task ${it.title} is done")
-                }
-            }
-            // check all task done
-            if (listTask.isNotEmpty() && listTask.all { it.isCompleted }) {
+            if (listTask.isEmpty()) {
                 NotificationUtils.showNotification(
-                    getString(R.string.app_name),
-                    getString(R.string.congratulation_done_task),
+                    getString(R.string.effective_plan),
+                    getString(R.string.effective_plan_des),
                     PendingIntent.getActivity(
                         this@ForegroundService,
                         0,
                         Intent(this@ForegroundService, MainActivity::class.java),
                         PendingIntent.FLAG_IMMUTABLE
-                    )
+                    ),
+                    NOTIFICATION_ID_REMIND_CREATE_PLAN_TODAY
                 )
-                Logger.d(TAG, "---> All tasks are done")
+            } else {
+                listTask.forEach {
+                    if (!it.isCompleted) {
+                        val timeRemaining = it.timeStart.calculateTimeRemaining()
+                        if (timeRemaining in 1..9) {
+                            NotificationUtils.showNotification(
+                                it.title,
+                                "$timeRemaining " + getString(R.string.remind_task_start_after),
+                                PendingIntent.getActivity(
+                                    this@ForegroundService,
+                                    0,
+                                    Intent(this@ForegroundService, MainActivity::class.java),
+                                    PendingIntent.FLAG_IMMUTABLE
+                                ),
+                                NOTIFICATION_ID_REMIND_TASK
+                            )
+                            Logger.d(
+                                TAG,
+                                "---> Task ${it.title} is not done time remain = " + it.timeStart.calculateTimeRemaining() + " minutes"
+                            )
+                        }
+                    } else {
+                        Logger.d(TAG, "---> Task ${it.title} is done")
+                    }
+                }
             }
+
         }
     }
 
@@ -102,6 +108,7 @@ class ForegroundService : Service() {
         Logger.d(TAG, "Service created")
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("ForegroundServiceType")
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Logger.d(TAG, "Service onStartCommand ")
@@ -112,7 +119,7 @@ class ForegroundService : Service() {
         val notification = buildNotification()
 
         // Start the foreground service
-        startForeground(1, notification)
+        startForeground(NOTIFICATION_ID_SERVICE, notification)
 
         registerEventUser()
 
@@ -121,6 +128,7 @@ class ForegroundService : Service() {
         return START_STICKY
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun scheduleCheckTask() {
         serviceScope.launch(Dispatchers.IO) {
             if (isServiceRunning) {
@@ -129,8 +137,9 @@ class ForegroundService : Service() {
             }
             isServiceRunning = true
             while (true) {
-                Logger.d(TAG, "----> schedule CheckTask every 10s")
-                delay(60000 * 10)
+                Logger.d(TAG, "----> schedule CheckTask every minute")
+                delay(TIME_CHECK_TASK)
+                checkStatusTask()
             }
         }
     }
@@ -186,6 +195,10 @@ class ForegroundService : Service() {
     companion object {
 
         const val TAG = "ForegroundServiceTask"
+        const val NOTIFICATION_ID_REMIND_TASK = 1
+        const val NOTIFICATION_ID_SERVICE = 2
+        const val NOTIFICATION_ID_REMIND_CREATE_PLAN_TODAY = 3
+        const val TIME_CHECK_TASK = 60 * 1000L
 
     }
 }
