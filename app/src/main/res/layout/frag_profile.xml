@@ -109,12 +109,12 @@
                         android:gravity="start"
                         android:paddingStart="10dp"
                         android:paddingEnd="10dp"
-                        android:text="@string/reminder"
+                        android:text="@string/reminder_sound"
                         android:textColor="@color/black"
                         android:textSize="14sp" />
 
                     <androidx.appcompat.widget.SwitchCompat
-                        android:id="@+id/swReminder"
+                        android:id="@+id/swReminderSound"
                         android:layout_width="49dp"
                         android:layout_height="49dp"
                         android:checked="true"

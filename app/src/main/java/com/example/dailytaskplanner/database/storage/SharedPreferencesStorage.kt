@@ -76,5 +76,15 @@ class SharedPreferencesStorage @Inject constructor(
         set(value) {
             putData(Constants.SharedPrefKey.KEY_DID_CONGRATULATION, value)
         }
+    override var enableSoundNotify: Boolean
+        get() = getData(Constants.SharedPrefKey.KEY_ENABLE_SOUND_NOTIFY, Boolean::class) ?: false
+        set(value) {
+            putData(Constants.SharedPrefKey.KEY_ENABLE_SOUND_NOTIFY, value)
+        }
+    override var lastTimeInviteCreatePlan: Long
+        get() = getData(Constants.SharedPrefKey.KEY_LAST_TIME_INVITE_CREATE_PLAN, Long::class) ?: 0L
+        set(value) {
+            putData(Constants.SharedPrefKey.KEY_LAST_TIME_INVITE_CREATE_PLAN, value)
+        }
 
 }

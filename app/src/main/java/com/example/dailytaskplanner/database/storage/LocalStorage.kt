@@ -19,4 +19,8 @@ interface LocalStorage {
     var age: String
 
     var didCongratulate: Boolean
+
+    var enableSoundNotify : Boolean
+
+    var lastTimeInviteCreatePlan : Long
 }

@@ -8,6 +8,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.media.MediaPlayer
 import android.os.Build
 import android.os.IBinder
 import android.widget.RemoteViews
@@ -42,6 +43,8 @@ class ForegroundService : Service() {
     @Inject
     lateinit var localStorage: LocalStorage
 
+    private var mediaPlayer: MediaPlayer? = null
+
     private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     private val broadcastReceiver = object : BroadcastReceiver() {
@@ -62,20 +65,10 @@ class ForegroundService : Service() {
         serviceScope.launch {
             val listTask = taskRepository.getTasksByDate(AppUtils.getCurrentDate())
             if (listTask.isEmpty()) {
-                NotificationUtils.showNotification(
-                    getString(R.string.effective_plan),
-                    getString(R.string.effective_plan_des),
-                    PendingIntent.getActivity(
-                        this@ForegroundService,
-                        0,
-                        Intent(this@ForegroundService, MainActivity::class.java),
-                        PendingIntent.FLAG_IMMUTABLE
-                    ),
-                    NOTIFICATION_ID_REMIND_CREATE_PLAN_TODAY
-                )
+                showNotifyInviteCreatePlan()
             } else {
                 listTask.forEach {
-                    if (!it.isCompleted) {
+                    if (!it.isCompleted && it.isReminder) {
                         val timeRemaining = it.timeStart.calculateTimeRemaining()
                         if (timeRemaining in 1..9) {
                             NotificationUtils.showNotification(
@@ -89,6 +82,7 @@ class ForegroundService : Service() {
                                 ),
                                 NOTIFICATION_ID_REMIND_TASK
                             )
+                            playSoundNotify()
                             Logger.d(
                                 TAG,
                                 "---> Task ${it.title} is not done time remain = " + it.timeStart.calculateTimeRemaining() + " minutes"
@@ -103,8 +97,33 @@ class ForegroundService : Service() {
         }
     }
 
+    private fun showNotifyInviteCreatePlan() {
+        val lastTimeInviteCreatePlan = localStorage.lastTimeInviteCreatePlan
+        if (lastTimeInviteCreatePlan == 0L || System.currentTimeMillis() - lastTimeInviteCreatePlan > 4 * 60 * 60 * 1000) { // 4h
+            localStorage.lastTimeInviteCreatePlan = System.currentTimeMillis()
+            NotificationUtils.showNotification(
+                getString(R.string.effective_plan),
+                getString(R.string.effective_plan_des),
+                PendingIntent.getActivity(
+                    this@ForegroundService,
+                    0,
+                    Intent(this@ForegroundService, MainActivity::class.java),
+                    PendingIntent.FLAG_IMMUTABLE
+                ),
+                NOTIFICATION_ID_REMIND_CREATE_PLAN_TODAY
+            )
+        }
+    }
+
+    private fun playSoundNotify() {
+        if (localStorage.enableSoundNotify) {
+            mediaPlayer?.start()
+        }
+    }
+
     override fun onCreate() {
         super.onCreate()
+        mediaPlayer = MediaPlayer.create(this, R.raw.me_sound)
         Logger.d(TAG, "Service created")
     }
 

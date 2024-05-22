@@ -27,4 +27,5 @@
     <string name="remind_task_start_after"> minutes to start</string>
     <string name="effective_plan">Effective planning</string>
     <string name="effective_plan_des">Take some time to plan for today!</string>
+    <string name="reminder_sound">Enable sound notify</string>
 </resources>

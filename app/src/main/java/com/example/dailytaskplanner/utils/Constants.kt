@@ -24,5 +24,7 @@ object Constants {
     object SharedPrefKey {
         const val KEY_AGE = "age"
         const val KEY_DID_CONGRATULATION = "did_congratulation"
+        const val KEY_ENABLE_SOUND_NOTIFY = "enable_sound_notify"
+        const val KEY_LAST_TIME_INVITE_CREATE_PLAN = "last_time_invite_create_plan"
     }
 }
