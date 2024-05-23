@@ -13,6 +13,7 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import com.example.dailytaskplanner.R
+import com.example.dailytaskplanner.database.storage.LocalStorage
 import com.example.dailytaskplanner.ui.MainActivity
 import com.example.dailytaskplanner.utils.Logger
 import com.example.dailytaskplanner.utils.NotificationUtils
@@ -22,22 +23,29 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.temporal.TemporalAdjusters
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
 class SaturdayWorker(private val appContext: Context, workerParams: WorkerParameters) :
     CoroutineWorker(appContext, workerParams) {
 
+    @Inject
+    lateinit var localStorage: LocalStorage
+
     @RequiresApi(Build.VERSION_CODES.O)
     override suspend fun doWork(): Result {
         // Code to show notification goes here
-        NotificationUtils.showNotification(
-            "Reminder", appContext.getString(R.string.notify_saturday),
-            PendingIntent.getActivity(
-                appContext,
-                0,
-                Intent(appContext, MainActivity::class.java),
-                PendingIntent.FLAG_IMMUTABLE
+        if (localStorage.enableNotifyApp) {
+            NotificationUtils.showNotification(
+                appContext.getString(R.string.app_name),
+                appContext.getString(R.string.notify_saturday),
+                PendingIntent.getActivity(
+                    appContext,
+                    0,
+                    Intent(appContext, MainActivity::class.java),
+                    PendingIntent.FLAG_IMMUTABLE
+                )
             )
-        )
+        }
         scheduleNext()
         return Result.success()
     }

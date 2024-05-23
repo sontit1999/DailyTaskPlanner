@@ -30,6 +30,10 @@ class ProfileFragment : BaseFragment<FragProfileBinding, ProfileViewModel>() {
             localStorage.enableSoundNotify = isChecked
         }
 
+        binding.swNotifyApp.setOnCheckedChangeListener { _, isChecked ->
+            localStorage.enableNotifyApp = isChecked
+        }
+
         binding.btnChooseTimeReminder.setSafeOnClickListener {
             showTimePicker(TYPE_REMINDER)
         }

@@ -18,7 +18,8 @@ data class Task(
     var isCompleted: Boolean,
     var isReminder: Boolean,
     var timeReminder : String,
-    var subTasks: String
+    var subTasks: String,
+    var didReminder: Boolean,
 )
 
 @Entity(tableName = "subtask")

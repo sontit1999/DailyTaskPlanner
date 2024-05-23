@@ -97,5 +97,15 @@ class SharedPreferencesStorage @Inject constructor(
         set(value) {
             putString(Constants.SharedPrefKey.KEY_REMIND_CREATE_PLAN, value)
         }
+    override var enableNotifyApp: Boolean
+        get() = getData(Constants.SharedPrefKey.KEY_ENABLE_NOTIFY, Boolean::class) ?: true
+        set(value) {
+            putData(Constants.SharedPrefKey.KEY_ENABLE_NOTIFY, value)
+        }
+    override var lastTimeNotifyUpdateStatusTask: Long
+        get() = getData(Constants.SharedPrefKey.KEY_LAST_TIME_NOTIFY_UPDATE_TASK, Long::class) ?: 0L
+        set(value) {
+            putData(Constants.SharedPrefKey.KEY_LAST_TIME_NOTIFY_UPDATE_TASK, value)
+        }
 
 }

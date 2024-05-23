@@ -28,5 +28,7 @@ object Constants {
         const val KEY_LAST_TIME_INVITE_CREATE_PLAN = "last_time_invite_create_plan"
         const val KEY_REMIND_TASK_BEFORE = "remind_task_before"
         const val KEY_REMIND_CREATE_PLAN = "remind_create_plan"
+        const val KEY_ENABLE_NOTIFY = "enable_notify"
+        const val KEY_LAST_TIME_NOTIFY_UPDATE_TASK = "last_time_notify_update_task"
     }
 }

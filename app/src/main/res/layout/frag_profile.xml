@@ -180,6 +180,7 @@
                         android:textSize="14sp" />
 
                     <androidx.appcompat.widget.SwitchCompat
+                        android:id="@+id/swNotifyApp"
                         android:layout_width="49dp"
                         android:layout_height="49dp"
                         android:checked="true"

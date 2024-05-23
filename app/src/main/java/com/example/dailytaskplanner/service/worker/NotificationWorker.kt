@@ -11,6 +11,8 @@ import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
+import com.example.dailytaskplanner.R
+import com.example.dailytaskplanner.database.storage.LocalStorage
 import com.example.dailytaskplanner.ui.MainActivity
 import com.example.dailytaskplanner.utils.Logger
 import com.example.dailytaskplanner.utils.NotificationUtils
@@ -18,23 +20,29 @@ import java.time.Duration
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
 class NotificationWorker(private val appContext: Context, workerParams: WorkerParameters) :
     CoroutineWorker(appContext, workerParams) {
 
+    @Inject
+    lateinit var localStorage: LocalStorage
+
     @RequiresApi(Build.VERSION_CODES.O)
     override suspend fun doWork(): Result {
         // Code to show notification goes here
-        NotificationUtils.showNotification(
-            "Reminder",
-            "Don't forget create a new plan for tomorrow!",
-            PendingIntent.getActivity(
-                appContext,
-                0,
-                Intent(appContext, MainActivity::class.java),
-                PendingIntent.FLAG_IMMUTABLE
+        if (localStorage.enableNotifyApp) {
+            NotificationUtils.showNotification(
+                appContext.getString(R.string.app_name),
+                appContext.getString(R.string.message_notify_daily_task_remind),
+                PendingIntent.getActivity(
+                    appContext,
+                    0,
+                    Intent(appContext, MainActivity::class.java),
+                    PendingIntent.FLAG_IMMUTABLE
+                )
             )
-        )
+        }
         scheduleNext()
         return Result.success()
     }
@@ -69,7 +77,15 @@ class NotificationWorker(private val appContext: Context, workerParams: WorkerPa
             } else {
                 LocalDateTime.of(now.toLocalDate(), ninePM)
             }
-            Logger.d(TAG, "Next notification time: $nextNotifyTime, time delay in seconds: ${Duration.between(now, nextNotifyTime).seconds}")
+            Logger.d(
+                TAG,
+                "Next notification time: $nextNotifyTime, time delay in seconds: ${
+                    Duration.between(
+                        now,
+                        nextNotifyTime
+                    ).seconds
+                }"
+            )
             return Duration.between(now, nextNotifyTime).seconds
         }
 

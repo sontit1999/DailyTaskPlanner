@@ -60,14 +60,16 @@ class ForegroundService : Service() {
                 Intent.ACTION_SCREEN_ON -> {
                     isUserPresent = true
                 }
+
                 Intent.ACTION_SCREEN_OFF -> {
                     isUserPresent = false
                     Logger.d(TAG, "----> Screen off")
                 }
+
                 Intent.ACTION_USER_PRESENT -> {
                     isUserPresent = true
                     serviceScope.launch(Dispatchers.IO) {
-                        delay(TIME_USER_ACTIVE_20_MINUTES)
+                        delay(TIME_USER_ACTIVE_10_MINUTES)
                         handleUserActive()
                     }
                     Logger.d(TAG, "----> Screen unlock")
@@ -96,11 +98,16 @@ class ForegroundService : Service() {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun showNotifyRemindTask(it : Task) {
+    private fun showNotifyRemindTask(it: Task) = CoroutineScope(Dispatchers.IO).launch{
         val timeRemaining = it.timeStart.calculateTimeRemaining()
-        if (timeRemaining in 1..localStorage.remindTaskBefore.toInt()) {
-            NotificationUtils.showNotificationRemindTask(this,
-                it.title + " " + getString(R.string.remind_task_start_after) + " " + timeRemaining + " " + getString(R.string.minutes),
+        if (timeRemaining in 1..localStorage.remindTaskBefore.toInt() && !it.didReminder) {
+            it.didReminder = true
+            taskRepository.updateTask(it)
+            NotificationUtils.showNotificationRemindTask(
+                this@ForegroundService,
+                it.title + " " + getString(R.string.remind_task_start_after) + " " + timeRemaining + " " + getString(
+                    R.string.minutes
+                ),
                 it.timeStart,
                 PendingIntent.getActivity(
                     this@ForegroundService,
@@ -186,9 +193,10 @@ class ForegroundService : Service() {
 
     private fun handleUserActive() {
         serviceScope.launch(Dispatchers.IO) {
-            if (isUserPresent) { // 20m
-                Logger.d(TAG, "----> User active 20 minutes")
-                // TODO: thông báo user đã hoàn thành % công việc || thông báo user update công việc
+            val lastTimeNotify = localStorage.lastTimeNotifyUpdateStatusTask
+            if ((isUserPresent && System.currentTimeMillis() - lastTimeNotify > 4 * 60 * 60 * 1000) || lastTimeNotify == 0L) { // 4h
+                Logger.d(TAG, "----> User active 10 minutes")
+                localStorage.lastTimeNotifyUpdateStatusTask = System.currentTimeMillis()
                 val listTask = taskRepository.getTasksByDate(AppUtils.getCurrentDate())
                 val totalTask = listTask.size
                 val numTaskDone = listTask.count { it.isCompleted }
@@ -202,7 +210,7 @@ class ForegroundService : Service() {
                         Intent(this@ForegroundService, MainActivity::class.java),
                         PendingIntent.FLAG_IMMUTABLE
                     ),
-                    System.currentTimeMillis().toInt()
+                    NOTIFICATION_ID_UPDATE_STATUS_TASK
                 )
             }
 
@@ -237,7 +245,10 @@ class ForegroundService : Service() {
     @SuppressLint("RemoteViewLayout")
     private fun buildNotification(): Notification {
         val notificationLayout = RemoteViews(packageName, R.layout.custom_notification_layout)
-        notificationLayout.setTextViewText(R.id.notification_body, getString(R.string.service_running))
+        notificationLayout.setTextViewText(
+            R.id.notification_body,
+            getString(R.string.service_running)
+        )
         val intent = Intent(this, MainActivity::class.java)
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK and Intent.FLAG_ACTIVITY_NEW_TASK)
         val pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
@@ -259,8 +270,9 @@ class ForegroundService : Service() {
         const val NOTIFICATION_ID_REMIND_TASK = 1
         const val NOTIFICATION_ID_SERVICE = 2
         const val NOTIFICATION_ID_REMIND_CREATE_PLAN_TODAY = 3
+        const val NOTIFICATION_ID_UPDATE_STATUS_TASK = 4
         const val TIME_CHECK_TASK = 60 * 1000L
-        const val TIME_USER_ACTIVE_20_MINUTES = 20 * 60 * 1000L
+        const val TIME_USER_ACTIVE_10_MINUTES = 10 * 60 * 1000L
 
     }
 }

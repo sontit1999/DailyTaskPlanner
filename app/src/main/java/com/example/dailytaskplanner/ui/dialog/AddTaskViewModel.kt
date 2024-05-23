@@ -39,7 +39,8 @@ class AddTaskViewModel @Inject constructor(
         false,
         true,
         "",
-        ""
+        "",
+        false
     )
 
     init {

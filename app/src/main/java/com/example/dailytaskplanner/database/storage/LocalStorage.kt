@@ -27,4 +27,8 @@ interface LocalStorage {
     var remindTaskBefore : String
 
     var remindCreatePlan : String
+
+    var enableNotifyApp : Boolean
+
+    var lastTimeNotifyUpdateStatusTask : Long
 }
