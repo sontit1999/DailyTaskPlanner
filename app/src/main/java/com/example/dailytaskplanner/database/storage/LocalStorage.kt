@@ -23,4 +23,8 @@ interface LocalStorage {
     var enableSoundNotify : Boolean
 
     var lastTimeInviteCreatePlan : Long
+
+    var remindTaskBefore : String
+
+    var remindCreatePlan : String
 }

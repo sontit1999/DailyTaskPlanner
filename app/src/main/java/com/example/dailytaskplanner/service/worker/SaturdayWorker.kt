@@ -12,6 +12,7 @@ import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
+import com.example.dailytaskplanner.R
 import com.example.dailytaskplanner.ui.MainActivity
 import com.example.dailytaskplanner.utils.Logger
 import com.example.dailytaskplanner.utils.NotificationUtils
@@ -29,8 +30,7 @@ class SaturdayWorker(private val appContext: Context, workerParams: WorkerParame
     override suspend fun doWork(): Result {
         // Code to show notification goes here
         NotificationUtils.showNotification(
-            "Reminder",
-            "Cuối tuần của bạn thế nào. Cùng nhìn lại những bạn đã làm dc nha!",
+            "Reminder", appContext.getString(R.string.notify_saturday),
             PendingIntent.getActivity(
                 appContext,
                 0,

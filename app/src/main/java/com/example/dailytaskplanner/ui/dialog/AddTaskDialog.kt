@@ -48,7 +48,7 @@ class AddTaskDialog : DialogFragment() {
         super.onCreate(savedInstanceState)
         arguments?.let {
             val task = Gson().fromJson(it.getString(KEY_TASK), Task::class.java)
-            dateCreateTask = it.getString(KEY_DATE,"")
+            dateCreateTask = it.getString(KEY_DATE, "")
             task?.let {
                 taskEdit = it
                 viewModel.task = it
@@ -270,11 +270,11 @@ class AddTaskDialog : DialogFragment() {
         private const val KEY_DATE = "date"
         const val TAG = "AddTaskDialog"
 
-        fun newInstance(task: Task?,dateStart : String = ""): AddTaskDialog {
+        fun newInstance(task: Task?, dateStart: String = ""): AddTaskDialog {
             val dialog = AddTaskDialog()
             val bundle = Bundle()
             bundle.putString(KEY_TASK, Gson().toJson(task))
-            bundle.putString(KEY_DATE,dateStart)
+            bundle.putString(KEY_DATE, dateStart)
             dialog.arguments = bundle
             return dialog
         }

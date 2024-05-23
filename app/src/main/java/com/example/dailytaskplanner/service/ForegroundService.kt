@@ -17,6 +17,7 @@ import androidx.core.app.NotificationCompat
 import com.example.dailytaskplanner.R
 import com.example.dailytaskplanner.database.TaskRepository
 import com.example.dailytaskplanner.database.storage.LocalStorage
+import com.example.dailytaskplanner.model.Task
 import com.example.dailytaskplanner.ui.MainActivity
 import com.example.dailytaskplanner.utils.AppUtils
 import com.example.dailytaskplanner.utils.AppUtils.calculateTimeRemaining
@@ -43,6 +44,9 @@ class ForegroundService : Service() {
     @Inject
     lateinit var localStorage: LocalStorage
 
+
+    var isUserPresent = false
+
     private var mediaPlayer: MediaPlayer? = null
 
     private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
@@ -52,10 +56,22 @@ class ForegroundService : Service() {
         @RequiresApi(Build.VERSION_CODES.O)
         override fun onReceive(context: Context, intent: Intent) {
             Logger.d(TAG, "----> onReceive action: ${intent.action}")
-            if (intent.action == Intent.ACTION_SCREEN_ON) {
-                // The screen has turned on
-                // Do something here, such as start an activity
-                // checkStatusTask()
+            when (intent.action) {
+                Intent.ACTION_SCREEN_ON -> {
+                    isUserPresent = true
+                }
+                Intent.ACTION_SCREEN_OFF -> {
+                    isUserPresent = false
+                    Logger.d(TAG, "----> Screen off")
+                }
+                Intent.ACTION_USER_PRESENT -> {
+                    isUserPresent = true
+                    serviceScope.launch(Dispatchers.IO) {
+                        delay(TIME_USER_ACTIVE_20_MINUTES)
+                        handleUserActive()
+                    }
+                    Logger.d(TAG, "----> Screen unlock")
+                }
             }
         }
     }
@@ -69,31 +85,36 @@ class ForegroundService : Service() {
             } else {
                 listTask.forEach {
                     if (!it.isCompleted && it.isReminder) {
-                        val timeRemaining = it.timeStart.calculateTimeRemaining()
-                        if (timeRemaining in 1..9) {
-                            NotificationUtils.showNotification(
-                                it.title,
-                                "$timeRemaining " + getString(R.string.remind_task_start_after),
-                                PendingIntent.getActivity(
-                                    this@ForegroundService,
-                                    0,
-                                    Intent(this@ForegroundService, MainActivity::class.java),
-                                    PendingIntent.FLAG_IMMUTABLE
-                                ),
-                                NOTIFICATION_ID_REMIND_TASK
-                            )
-                            playSoundNotify()
-                            Logger.d(
-                                TAG,
-                                "---> Task ${it.title} is not done time remain = " + it.timeStart.calculateTimeRemaining() + " minutes"
-                            )
-                        }
+                        showNotifyRemindTask(it)
                     } else {
                         Logger.d(TAG, "---> Task ${it.title} is done")
                     }
                 }
             }
 
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun showNotifyRemindTask(it : Task) {
+        val timeRemaining = it.timeStart.calculateTimeRemaining()
+        if (timeRemaining in 1..localStorage.remindTaskBefore.toInt()) {
+            NotificationUtils.showNotificationRemindTask(this,
+                it.title + " " + getString(R.string.remind_task_start_after) + " " + timeRemaining + " " + getString(R.string.minutes),
+                it.timeStart,
+                PendingIntent.getActivity(
+                    this@ForegroundService,
+                    0,
+                    Intent(this@ForegroundService, MainActivity::class.java),
+                    PendingIntent.FLAG_IMMUTABLE
+                ),
+                NOTIFICATION_ID_REMIND_TASK
+            )
+            playSoundNotify()
+            Logger.d(
+                TAG,
+                "---> Task ${it.title} is not done time remain = " + it.timeStart.calculateTimeRemaining() + " minutes"
+            )
         }
     }
 
@@ -163,6 +184,32 @@ class ForegroundService : Service() {
         }
     }
 
+    private fun handleUserActive() {
+        serviceScope.launch(Dispatchers.IO) {
+            if (isUserPresent) { // 20m
+                Logger.d(TAG, "----> User active 20 minutes")
+                // TODO: thông báo user đã hoàn thành % công việc || thông báo user update công việc
+                val listTask = taskRepository.getTasksByDate(AppUtils.getCurrentDate())
+                val totalTask = listTask.size
+                val numTaskDone = listTask.count { it.isCompleted }
+                NotificationUtils.showNotifyNormal(
+                    this@ForegroundService,
+                    getString(R.string.congratulation),
+                    getString(R.string.congratulation_done_task_to_now, "$numTaskDone/$totalTask"),
+                    PendingIntent.getActivity(
+                        this@ForegroundService,
+                        0,
+                        Intent(this@ForegroundService, MainActivity::class.java),
+                        PendingIntent.FLAG_IMMUTABLE
+                    ),
+                    System.currentTimeMillis().toInt()
+                )
+            }
+
+        }
+
+    }
+
     private fun registerEventUser() {
         val intentFilter = IntentFilter(Intent.ACTION_SCREEN_ON)
         intentFilter.addAction(Intent.ACTION_SCREEN_OFF)
@@ -190,19 +237,14 @@ class ForegroundService : Service() {
     @SuppressLint("RemoteViewLayout")
     private fun buildNotification(): Notification {
         val notificationLayout = RemoteViews(packageName, R.layout.custom_notification_layout)
-        notificationLayout.setTextViewText(R.id.notification_title, "Foreground Service")
-        notificationLayout.setTextViewText(
-            R.id.notification_body,
-            "Service is running in the foreground."
-        )
-
+        notificationLayout.setTextViewText(R.id.notification_body, getString(R.string.service_running))
         val intent = Intent(this, MainActivity::class.java)
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK and Intent.FLAG_ACTIVITY_NEW_TASK)
         val pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
 
         return NotificationCompat.Builder(this, NotificationUtils.CHANNEL_ID)
-            .setContentTitle("Foreground Service")
-            .setContentText("Service is running in the foreground.")
+            .setContentTitle(getString(R.string.app_name))
+            .setContentText(getString(R.string.service_running))
             .setSmallIcon(R.drawable.icon_task)
             .setAutoCancel(false)
             .setOngoing(true)
@@ -218,6 +260,7 @@ class ForegroundService : Service() {
         const val NOTIFICATION_ID_SERVICE = 2
         const val NOTIFICATION_ID_REMIND_CREATE_PLAN_TODAY = 3
         const val TIME_CHECK_TASK = 60 * 1000L
+        const val TIME_USER_ACTIVE_20_MINUTES = 20 * 60 * 1000L
 
     }
 }

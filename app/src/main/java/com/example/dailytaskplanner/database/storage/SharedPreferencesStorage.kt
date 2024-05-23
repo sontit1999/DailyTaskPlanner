@@ -86,5 +86,16 @@ class SharedPreferencesStorage @Inject constructor(
         set(value) {
             putData(Constants.SharedPrefKey.KEY_LAST_TIME_INVITE_CREATE_PLAN, value)
         }
+    override var remindTaskBefore: String
+        get() = getString(Constants.SharedPrefKey.KEY_REMIND_TASK_BEFORE)
+            ?: "10"
+        set(value) {
+            putString(Constants.SharedPrefKey.KEY_REMIND_TASK_BEFORE, value)
+        }
+    override var remindCreatePlan: String
+        get() = getString(Constants.SharedPrefKey.KEY_REMIND_CREATE_PLAN) ?: "09:00 PM"
+        set(value) {
+            putString(Constants.SharedPrefKey.KEY_REMIND_CREATE_PLAN, value)
+        }
 
 }

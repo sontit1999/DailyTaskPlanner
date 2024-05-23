@@ -19,13 +19,18 @@
     <string name="no_task">No task for selected date! Add now</string>
     <string name="policy">Privacy Policy</string>
     <string name="notify_app">Notification</string>
-    <string name="time_reminder_create_plan">Time remind new plan</string>
+    <string name="time_reminder_create_plan">Remind new plan at </string>
     <string name="summary">Summary</string>
     <string name="statical">Statistical</string>
-    <string name="remind_task">Remind task before 10m</string>
+    <string name="remind_task">Remind task before </string>
     <string name="setting">Setting</string>
-    <string name="remind_task_start_after"> minutes to start</string>
+    <string name="remind_task_start_after"> will start in </string>
     <string name="effective_plan">Effective planning</string>
     <string name="effective_plan_des">Take some time to plan for today!</string>
     <string name="reminder_sound">Enable sound notify</string>
+    <string name="service_running">is running to remind task 😜</string>
+    <string name="minutes">minutes</string>
+    <string name="congratulation_done_task_to_now">You have completed %s missions today! Hang in there, you\'re almost done!" </string>
+    <string name="congratulation">Congratulation</string>
+    <string name="notify_saturday">Hãy xem lại công việc của bạn trong tuần qua</string>
 </resources>

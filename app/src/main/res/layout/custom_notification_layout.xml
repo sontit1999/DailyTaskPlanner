@@ -8,6 +8,7 @@
         android:id="@+id/notification_title"
         style="@style/TextAppearance.Compat.Notification.Title"
         android:layout_width="wrap_content"
+        android:visibility="gone"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:text="Custom Notification" />

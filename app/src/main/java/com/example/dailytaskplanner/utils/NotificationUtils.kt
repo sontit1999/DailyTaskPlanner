@@ -4,13 +4,17 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
+import android.graphics.drawable.Icon
 import android.os.Build
+import android.widget.RemoteViews
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import com.example.dailytaskplanner.App
 import com.example.dailytaskplanner.R
 import com.example.dailytaskplanner.service.worker.NotificationWorker
 import com.example.dailytaskplanner.service.worker.SaturdayWorker
+import com.example.dailytaskplanner.ui.MainActivity
 
 object NotificationUtils {
 
@@ -40,6 +44,59 @@ object NotificationUtils {
 
         // Show the notification
         notificationManager.notify(id, notification)
+    }
+
+    fun showNotificationRemindTask(
+        context: Context,
+        title: String,
+        content: String,
+        pendingIntent: PendingIntent,
+        id: Int = System.currentTimeMillis().toInt()
+    ) {
+        createNotificationChannel()
+
+        val notificationLayout =
+            RemoteViews(context.packageName, R.layout.custom_notification_remind_task)
+        notificationLayout.setTextViewText(R.id.notification_title, title)
+        notificationLayout.setTextViewText(
+            R.id.notification_time,
+            content
+        )
+        notificationLayout.setImageViewIcon(R.id.notification_icon, Icon.createWithResource(context, R.drawable.icon_task))
+
+
+        val notify = NotificationCompat.Builder(context, CHANNEL_ID)
+            //.setContentTitle(title)
+            //.setContentText(content)
+            .setSmallIcon(R.drawable.icon_task)
+            .setAutoCancel(false)
+            .setOngoing(true)
+            .setContentIntent(pendingIntent)
+            .setCustomContentView(notificationLayout)
+            .build()
+
+        // Show the notification
+        notificationManager.notify(id, notify)
+    }
+
+    fun showNotifyNormal(
+        context: Context,
+        title: String,
+        content: String,
+        pendingIntent: PendingIntent,
+        id: Int = System.currentTimeMillis().toInt()
+    ) {
+        createNotificationChannel()
+
+        val notify = NotificationCompat.Builder(context, CHANNEL_ID)
+            .setContentTitle(title)
+            .setContentText(content)
+            .setSmallIcon(R.drawable.icon_task)
+            .setContentIntent(pendingIntent)
+            .build()
+
+        // Show the notification
+        notificationManager.notify(id, notify)
     }
 
     fun createNotificationChannel() {
