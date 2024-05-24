@@ -30,5 +30,6 @@ object Constants {
         const val KEY_REMIND_CREATE_PLAN = "remind_create_plan"
         const val KEY_ENABLE_NOTIFY = "enable_notify"
         const val KEY_LAST_TIME_NOTIFY_UPDATE_TASK = "last_time_notify_update_task"
+        const val KEY_CAN_SHOW_OPEN_ADS = "can_show_open_ads"
     }
 }

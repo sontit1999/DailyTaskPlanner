@@ -8,6 +8,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.FragmentActivity
 import com.example.dailytaskplanner.R
 import com.example.dailytaskplanner.adapter.MainPagerAdapter
+import com.example.dailytaskplanner.ads.AdManager
 import com.example.dailytaskplanner.databinding.ActivityMainBinding
 import com.example.dailytaskplanner.utils.AppUtils
 import com.example.dailytaskplanner.utils.NotificationUtils
@@ -61,6 +62,11 @@ class MainActivity : FragmentActivity() {
     override fun onResume() {
         super.onResume()
         NotificationUtils.cancelReminderNotification(this)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        AdManager.destroyAll()
     }
 
 }

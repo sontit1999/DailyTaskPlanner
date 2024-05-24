@@ -2,7 +2,10 @@ package com.example.dailytaskplanner
 
 import android.app.Application
 import com.example.dailytaskplanner.utils.AppConfig
+import com.example.dailytaskplanner.utils.Logger
+import com.google.android.gms.ads.MobileAds
 import dagger.hilt.android.HiltAndroidApp
+
 
 @HiltAndroidApp
 class App : Application() {
@@ -10,6 +13,15 @@ class App : Application() {
         super.onCreate()
         mInstance = this
         AppConfig.setup(this)
+        initMobileAd()
+    }
+
+    private fun initMobileAd() {
+        MobileAds.initialize(
+            this
+        ) {
+            Logger.d("-----> MobileAds initialized")
+        }
     }
 
     companion object{

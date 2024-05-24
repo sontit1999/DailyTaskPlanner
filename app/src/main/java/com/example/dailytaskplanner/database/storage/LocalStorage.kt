@@ -31,4 +31,6 @@ interface LocalStorage {
     var enableNotifyApp : Boolean
 
     var lastTimeNotifyUpdateStatusTask : Long
+
+    var canShowOpenAd : Boolean
 }
