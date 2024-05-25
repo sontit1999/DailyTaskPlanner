@@ -54,12 +54,12 @@ class HomeViewModel @Inject constructor(
     }
 
 
-    fun getTaskByDate(dateString: String) {
+    fun getTaskByDate(dateString: String,isFirst : Boolean = false) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val listTask = taskRepository.getTasksByDate(dateString)
                 listTaskLiveData.postValue(listTask)
-                if (listTask.isNotEmpty()) {
+                if (listTask.isNotEmpty() && !isFirst) {
                     statusDoneAllTaskLiveData.postValue(listTask.all { it.isCompleted })
                 }
                 Logger.d(TAG, "getTaskByDate $dateString size: ${listTask.size}")

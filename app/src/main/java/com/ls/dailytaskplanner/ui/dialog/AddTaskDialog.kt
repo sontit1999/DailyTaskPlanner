@@ -160,7 +160,7 @@ class AddTaskDialog : DialogFragment() {
             }
         }
 
-        if(AdManager.nativeAddTaskLiveData.value == null && !AdManager.isDoingLoadNativeAddTask) {
+        if (AdManager.nativeAddTaskLiveData.value == null && !AdManager.isDoingLoadNativeAddTask) {
             AdManager.loadNativeAddTask()
         }
     }
@@ -206,7 +206,7 @@ class AddTaskDialog : DialogFragment() {
             override fun afterTextChanged(s: Editable) {
                 // This method is called to notify you that, somewhere within 's', the text has
                 // been changed.
-                viewModel.task.title = s.toString()
+                viewModel.task.title = s.trim().toString()
             }
         })
 
@@ -224,7 +224,7 @@ class AddTaskDialog : DialogFragment() {
             override fun afterTextChanged(s: Editable) {
                 // This method is called to notify you that, somewhere within 's', the text has
                 // been changed.
-                viewModel.task.description = s.toString()
+                viewModel.task.description = s.trim().toString()
             }
         })
 
@@ -233,15 +233,23 @@ class AddTaskDialog : DialogFragment() {
         }
 
         binding.tvCreate.setSafeOnClickListener {
+            handleSaveTask()
+        }
+
+        binding.ivClose.setSafeOnClickListener {
+            if (!AdManager.showInter(false, TAG_INTER_ADD_TASK)) dismiss()
+        }
+    }
+
+    private fun handleSaveTask() {
+        if (binding.edtTitleTask.text?.trim().toString()?.isEmpty() == true) {
+            viewModel.showToastLiveData.postValue(getString(R.string.please_enter_title))
+        } else {
             if (taskEdit == null) {
                 viewModel.addTask()
             } else {
                 viewModel.updateTask(viewModel.task)
             }
-        }
-
-        binding.ivClose.setSafeOnClickListener {
-            if (!AdManager.showInter(false, TAG_INTER_ADD_TASK)) dismiss()
         }
     }
 

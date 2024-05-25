@@ -46,6 +46,8 @@ object AllEvents {
     const val E1_ADS_BANNER_APPLOVIN_CLICK = "e1_ads_banner_applovin_click"
 
     // open ads
+    const val E1_ADS_OPEN_ADS_SPLASH_LOAD_SUCCESS = "e1_ads_open_splash_load_success"
+    const val E1_ADS_OPEN_ADS_SPLASH_LOAD_FAIL = "e1_ads_open_splash_load_fail"
     const val E1_ADS_OPEN_ADS_LOAD_SUCCESS = "e1_ads_open_load_success"
     const val E1_ADS_OPEN_ADS_LOAD_FAIL = "e1_ads_open_load_fail"
     const val E1_ADS_OPEN_ADS_SHOW_SUCCESS = "e1_ads_open_show_success"

@@ -37,4 +37,5 @@
     <string name="message_notify_daily_task_remind">Update status task today and Don\'t forget create a new plan for tomorrow!</string>
     <string name="loading_ad">Loading ad ...</string>
     <string name="msg_btn_continue">Continue</string>
+    <string name="please_enter_title">Please enter the name of the task</string>
 </resources>

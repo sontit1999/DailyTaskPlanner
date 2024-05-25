@@ -20,11 +20,11 @@
             android:id="@+id/bottomNav"
             android:layout_width="match_parent"
             android:layout_height="56dp"
+            android:layout_marginBottom="2dp"
             android:background="?android:attr/windowBackground"
             android:foreground="?attr/selectableItemBackground"
             app:itemIconTint="#00BCD4"
             app:itemTextColor="#00BCD4"
-            android:layout_marginBottom="2dp"
             app:layout_constraintBottom_toTopOf="@+id/containerAd"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -32,22 +32,61 @@
 
         <FrameLayout
             android:id="@+id/containerAd"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
             <View
                 android:id="@+id/backgroundAd"
-                android:background="#EAEAEA"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"/>
+                android:layout_height="50dp"
+                android:background="#EAEAEA" />
+
             <androidx.appcompat.widget.AppCompatTextView
-                android:text="@string/loading_ad"
-                android:gravity="center"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"/>
+                android:layout_height="50dp"
+                android:gravity="center"
+                android:text="@string/loading_ad" />
         </FrameLayout>
 
+        <FrameLayout
+            android:id="@+id/layoutSplash"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#FFFFFF"
+            android:translationZ="10dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/iconApp"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_gravity="center"
+                android:src="@mipmap/ic_launcher_foreground" />
+
+            <com.google.android.material.progressindicator.LinearProgressIndicator
+                android:id="@+id/loadingView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_margin="15dp"
+                android:indeterminate="true"
+                app:indicatorColor="@color/color_main" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/containerFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:translationZ="9999dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

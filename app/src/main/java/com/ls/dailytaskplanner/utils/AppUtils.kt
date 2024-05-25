@@ -1,5 +1,7 @@
 package com.ls.dailytaskplanner.utils
 
+import android.app.ActivityManager
+import android.content.Context
 import android.content.Intent
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -27,12 +29,18 @@ object AppUtils {
     }
 
     fun startTaskService() {
-        App.mInstance.startService(
-            Intent(
-                App.mInstance.applicationContext,
-                ForegroundService::class.java
+        if (App.mInstance.applicationContext.isServiceRunning<ForegroundService>()) {
+            // Foreground service is running
+            Logger.d("---> Foreground service is running")
+        } else {
+            // Foreground service is not running
+            App.mInstance.startService(
+                Intent(
+                    App.mInstance.applicationContext,
+                    ForegroundService::class.java
+                )
             )
-        )
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -83,6 +91,16 @@ object AppUtils {
         val duration = Duration.between(currentTime, givenTime)
 
         return (duration.seconds / 60).toInt()
+    }
+
+    @Suppress("DEPRECATION") // Deprecated for third party Services.
+    inline fun <reified T> Context.isServiceRunning() =
+        (getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager)
+            .getRunningServices(Integer.MAX_VALUE)
+            .any { it.service.className == T::class.java.name }
+
+    fun readFileTextFromAssets(context: Context, fileName: String): String {
+        return context.assets.open(fileName).bufferedReader().use { it.readText() }
     }
 
 }

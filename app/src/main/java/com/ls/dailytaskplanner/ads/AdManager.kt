@@ -18,6 +18,7 @@ import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.FullScreenContentCallback
 import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.VideoOptions
+import com.google.android.gms.ads.appopen.AppOpenAd
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import com.google.android.gms.ads.nativead.NativeAd
@@ -52,7 +53,12 @@ object AdManager {
         AppOpenAdManager.start()
     }
 
-    fun loadBanner(view: FrameLayout, adKey: String, isShowCollapsible: Boolean = false, autoRefresh : Boolean = false): AdView? {
+    fun loadBanner(
+        view: FrameLayout,
+        adKey: String,
+        isShowCollapsible: Boolean = false,
+        autoRefresh: Boolean = false
+    ): AdView? {
         if (!RemoteConfig.commonConfig.isActiveAds || !RemoteConfig.commonConfig.supportBanner) {
             view.gone()
             null
@@ -163,6 +169,29 @@ object AdManager {
             (adView.callToActionView as? TextView?)?.text = nativeAd.callToAction
         }
         adView.setNativeAd(nativeAd)
+    }
+
+    fun loadOpenAdSplash(onLoadFinish: (AppOpenAd?) -> Unit) {
+        val request = AdRequest.Builder().build()
+        AppOpenAd.load(
+            App.mInstance, RemoteConfig.commonConfig.openAdSplashKey, request,
+            AppOpenAd.APP_OPEN_AD_ORIENTATION_PORTRAIT,
+            object : AppOpenAd.AppOpenAdLoadCallback() {
+
+                override fun onAdLoaded(ad: AppOpenAd) {
+                    // Called when an app open ad has loaded.
+                    Logger.d("Open ad load success")
+                    onLoadFinish.invoke(ad)
+                    TrackingHelper.logEvent(AllEvents.E1_ADS_OPEN_ADS_SPLASH_LOAD_SUCCESS)
+                }
+
+                override fun onAdFailedToLoad(loadAdError: LoadAdError) {
+                    // Called when an app open ad has failed to load.
+                    Logger.d("Open ad load fail : " + loadAdError.message)
+                    onLoadFinish.invoke(null)
+                    TrackingHelper.logEvent(AllEvents.E1_ADS_OPEN_ADS_SPLASH_LOAD_FAIL)
+                }
+            })
     }
 
     private fun isInterAvailable() = interstitialAd != null

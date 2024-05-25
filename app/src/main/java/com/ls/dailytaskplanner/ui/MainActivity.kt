@@ -5,7 +5,10 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import com.google.android.gms.ads.AdError
+import com.google.android.gms.ads.FullScreenContentCallback
 import com.ls.dailytaskplanner.R
 import com.ls.dailytaskplanner.adapter.MainPagerAdapter
 import com.ls.dailytaskplanner.ads.AdManager
@@ -29,13 +32,43 @@ class MainActivity : FragmentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         EventBus.getDefault().register(this)
         AdManager.initialize()
         AppUtils.startTaskService()
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
-        setContentView(binding.root)
         setUpViewPager()
         setUpBottomNavigation()
+        handleLoadShowOpenAd()
+    }
+
+    private fun handleLoadShowOpenAd() {
+        AdManager.loadOpenAdSplash { openAd ->
+            if (openAd != null) {
+                openAd.fullScreenContentCallback = object : FullScreenContentCallback() {
+
+                    override fun onAdDismissedFullScreenContent() {
+                        // Called when full screen content is dismissed.
+                        // Set the reference to null so isAdAvailable() returns false.
+                        hiddenSplash()
+                    }
+
+                    override fun onAdFailedToShowFullScreenContent(adError: AdError) {
+                        hiddenSplash()
+                    }
+
+                    override fun onAdShowedFullScreenContent() {
+
+                    }
+                }
+                openAd.show(this)
+            } else {
+                hiddenSplash()
+            }
+        }
+    }
+
+    fun hiddenSplash() {
+        binding.layoutSplash.gone()
         loadBannerAd()
         AdManager.loadAdIfNeed(this)
     }
@@ -72,6 +105,16 @@ class MainActivity : FragmentActivity() {
         if (event.isShow) {
             binding.containerAd.gone()
         } else binding.containerAd.visible()
+    }
+
+    fun addFragment(fragment: Fragment) {
+        supportFragmentManager.beginTransaction().setCustomAnimations(
+            R.anim.slide_in_right,
+            R.anim.slide_out_left,
+            R.anim.slide_in_left,
+            R.anim.slide_out_right
+        ).add(R.id.containerFragment, fragment)
+            .addToBackStack(fragment.javaClass.simpleName).commit()
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

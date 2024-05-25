@@ -6,7 +6,9 @@ import com.ls.dailytaskplanner.R
 import com.ls.dailytaskplanner.base.BaseFragment
 import com.ls.dailytaskplanner.database.storage.LocalStorage
 import com.ls.dailytaskplanner.databinding.FragProfileBinding
+import com.ls.dailytaskplanner.ui.MainActivity
 import com.ls.dailytaskplanner.ui.dialog.AddTaskDialog
+import com.ls.dailytaskplanner.ui.policy.PolicyFragment
 import com.ls.dailytaskplanner.utils.setSafeOnClickListener
 import com.ozcanalasalvar.datepicker.view.popup.TimePickerPopup
 import com.ozcanalasalvar.datepicker.view.timepicker.TimePicker
@@ -40,6 +42,14 @@ class ProfileFragment : BaseFragment<FragProfileBinding, ProfileViewModel>() {
 
         binding.btnChooseTimeCreatePlan.setSafeOnClickListener {
             showTimePicker(TYPE_PLANNER)
+        }
+
+        binding.btnPolicy.setSafeOnClickListener {
+            (activity as MainActivity?)?.addFragment(PolicyFragment())
+        }
+
+        binding.btnStatistic.setSafeOnClickListener {
+            (activity as MainActivity?)?.addFragment(PolicyFragment())
         }
 
     }
@@ -84,6 +94,10 @@ class ProfileFragment : BaseFragment<FragProfileBinding, ProfileViewModel>() {
 
     @SuppressLint("SetTextI18n")
     override fun viewCreated() {
+        binding.swReminderSound.isChecked = localStorage.enableSoundNotify
+
+        binding.swNotifyApp.isChecked = localStorage.enableNotifyApp
+
         binding.tvTimeCreatePlan.text =
             getString(R.string.time_reminder_create_plan) + " " + localStorage.remindCreatePlan
         binding.tvTimeReminder.text =

@@ -44,6 +44,9 @@ class CommonConfig {
     @SerializedName(value = "versionCodeForReview")
     var versionCodeForReview: Int = 0
 
+    @SerializedName(value = "openAdSplashKey")
+    var openAdSplashKey: String = "ca-app-pub-4945756407745123/8715417519"
+
     @SerializedName(value = "openAdKey")
     var openAdKey: String = "ca-app-pub-4945756407745123/3154300775"
 

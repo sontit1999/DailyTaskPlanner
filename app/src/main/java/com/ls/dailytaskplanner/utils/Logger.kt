@@ -3,7 +3,7 @@ package com.ls.dailytaskplanner.utils
 import android.util.Log
 
 object Logger {
-    const val TAG_COMMON = "DailyTaskPlanner"
+    private const val TAG_COMMON = "DailyTaskPlanner"
 
     fun d(message: String) {
         Log.d(TAG_COMMON, message)

@@ -60,7 +60,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="15dp"
                     android:background="@null"
-                    android:hint="@string/new_task"
+                    android:hint="@string/please_enter_title"
                     android:lines="2"
                     android:padding="10dp"
                     android:textAlignment="center"

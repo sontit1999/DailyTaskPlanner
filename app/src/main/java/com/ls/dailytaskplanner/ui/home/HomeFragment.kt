@@ -58,8 +58,8 @@ class HomeFragment : BaseFragment<FragHomeBinding, HomeViewModel>() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun viewCreated() {
         initRvTask()
-        viewModel.getTaskByDate(AppUtils.getCurrentDate())
         initCalender()
+        viewModel.getTaskByDate(AppUtils.getCurrentDate(),true)
         AdManager.loadNativeAddTask()
     }
 
