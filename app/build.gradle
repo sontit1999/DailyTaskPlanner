@@ -3,14 +3,16 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
     id 'com.google.dagger.hilt.android'
+    id 'com.google.gms.google-services'
+
 }
 
 android {
-    namespace 'com.example.dailytaskplanner'
+    namespace 'com.ls.dailytaskplanner'
     compileSdk 34
 
     defaultConfig {
-        applicationId "com.example.dailytaskplanner"
+        applicationId "com.ls.dailytaskplanner"
         minSdk 24
         targetSdk 34
         versionCode 1

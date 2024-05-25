@@ -24,10 +24,30 @@
             android:foreground="?attr/selectableItemBackground"
             app:itemIconTint="#00BCD4"
             app:itemTextColor="#00BCD4"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="2dp"
+            app:layout_constraintBottom_toTopOf="@+id/containerAd"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:menu="@menu/bottom_menu" />
+
+        <FrameLayout
+            android:id="@+id/containerAd"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <View
+                android:id="@+id/backgroundAd"
+                android:background="#EAEAEA"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"/>
+            <androidx.appcompat.widget.AppCompatTextView
+                android:text="@string/loading_ad"
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"/>
+        </FrameLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

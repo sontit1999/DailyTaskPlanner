@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1061064411688",
+    "project_id": "daily-plan-430e3",
+    "storage_bucket": "daily-plan-430e3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1061064411688:android:b6221b500c0ee85a8e831d",
+        "android_client_info": {
+          "package_name": "com.ls.dailytaskplanner"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDQ8BDjrLS5VQa0BUfT6p7usgt6nanmpIE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

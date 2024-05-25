@@ -39,7 +39,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
 
-        <com.example.dailytaskplanner.custom.WeekCalendarView
+        <com.ls.dailytaskplanner.custom.WeekCalendarView
             android:id="@+id/calendarView"
             android:layout_width="match_parent"
             android:layout_height="100dp"
@@ -101,7 +101,7 @@
             app:lottie_loop="true"
             app:lottie_autoPlay="true"
             app:backgroundTint="@color/color_main"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/rvTask"
             app:layout_constraintEnd_toEndOf="parent" />
 
         <com.airbnb.lottie.LottieAnimationView

@@ -1,4 +1,5 @@
 <resources>
+    <string name="com.crashlytics.android.build_id">1</string>
     <string name="app_name">DailyTaskPlanner</string>
     <string name="title_home">Home</string>
     <string name="title_profile">Profile</string>
@@ -34,4 +35,6 @@
     <string name="congratulation">Congratulation</string>
     <string name="notify_saturday">Hãy xem lại công việc của bạn trong tuần qua</string>
     <string name="message_notify_daily_task_remind">Update status task today and Don\'t forget create a new plan for tomorrow!</string>
+    <string name="loading_ad">Loading ad ...</string>
+    <string name="msg_btn_continue">Continue</string>
 </resources>
