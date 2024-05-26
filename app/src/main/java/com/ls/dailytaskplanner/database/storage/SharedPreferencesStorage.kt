@@ -117,5 +117,10 @@ class SharedPreferencesStorage @Inject constructor(
         set(value) {
             putData(Constants.SharedPrefKey.KEY_DID_CHOOSE_LANGUAGE, value)
         }
+    override var openCount: Int
+        get() = getData(Constants.SharedPrefKey.KEY_OPEN_COUNT, Int::class) ?: 0
+        set(value) {
+            putData(Constants.SharedPrefKey.KEY_OPEN_COUNT, value)
+        }
 
 }

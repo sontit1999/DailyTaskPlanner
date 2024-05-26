@@ -9,6 +9,8 @@ import com.ls.dailytaskplanner.databinding.FragProfileBinding
 import com.ls.dailytaskplanner.ui.MainActivity
 import com.ls.dailytaskplanner.ui.dialog.AddTaskDialog
 import com.ls.dailytaskplanner.ui.policy.PolicyFragment
+import com.ls.dailytaskplanner.utils.AllEvents
+import com.ls.dailytaskplanner.utils.TrackingHelper
 import com.ls.dailytaskplanner.utils.setSafeOnClickListener
 import com.ozcanalasalvar.datepicker.view.popup.TimePickerPopup
 import com.ozcanalasalvar.datepicker.view.timepicker.TimePicker
@@ -30,17 +32,21 @@ class ProfileFragment : BaseFragment<FragProfileBinding, ProfileViewModel>() {
     override fun bindingAction() {
         binding.swReminderSound.setOnCheckedChangeListener { _, isChecked ->
             localStorage.enableSoundNotify = isChecked
+            TrackingHelper.logEvent(AllEvents.ACTION_CHANGE_NOTIFY_SOUND)
         }
 
         binding.swNotifyApp.setOnCheckedChangeListener { _, isChecked ->
             localStorage.enableNotifyApp = isChecked
+            TrackingHelper.logEvent(AllEvents.ACTION_CHANGE_NOTIFY_OFFLINE)
         }
 
         binding.btnChooseTimeReminder.setSafeOnClickListener {
+            TrackingHelper.logEvent(AllEvents.ACTION_CHANGE_TIME_REMIND_TASK)
             showTimePicker(TYPE_REMINDER)
         }
 
         binding.btnChooseTimeCreatePlan.setSafeOnClickListener {
+            TrackingHelper.logEvent(AllEvents.ACTION_CHANGE_TIME_REMIND_NEW_PLAN)
             showTimePicker(TYPE_PLANNER)
         }
 
@@ -94,6 +100,8 @@ class ProfileFragment : BaseFragment<FragProfileBinding, ProfileViewModel>() {
 
     @SuppressLint("SetTextI18n")
     override fun viewCreated() {
+
+        TrackingHelper.logEvent(AllEvents.VIEW_PROFILE)
         binding.swReminderSound.isChecked = localStorage.enableSoundNotify
 
         binding.swNotifyApp.isChecked = localStorage.enableNotifyApp

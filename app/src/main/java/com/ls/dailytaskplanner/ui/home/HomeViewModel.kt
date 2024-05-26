@@ -8,8 +8,10 @@ import com.ls.dailytaskplanner.base.BaseViewModel
 import com.ls.dailytaskplanner.database.TaskRepository
 import com.ls.dailytaskplanner.model.Task
 import com.ls.dailytaskplanner.model.eventbus.RefreshDataTask
+import com.ls.dailytaskplanner.utils.AllEvents
 import com.ls.dailytaskplanner.utils.Logger
 import com.ls.dailytaskplanner.utils.SingleLiveEvent
+import com.ls.dailytaskplanner.utils.TrackingHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -46,6 +48,7 @@ class HomeViewModel @Inject constructor(
             try {
                 taskRepository.deleteTask(task)
                 showToastLiveData.postValue(App.mInstance.getString(R.string.task_deleted))
+                TrackingHelper.logEvent(AllEvents.TASK_REMOVE)
                 Logger.d(TAG, "Task deleted successfully")
             } catch (e: Exception) {
                 Logger.e(TAG, "Error deleting task: ${e.message}")

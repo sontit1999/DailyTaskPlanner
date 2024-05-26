@@ -11,8 +11,10 @@ import com.ls.dailytaskplanner.App
 import com.ls.dailytaskplanner.R
 import com.ls.dailytaskplanner.databinding.ItemTaskBinding
 import com.ls.dailytaskplanner.model.Task
+import com.ls.dailytaskplanner.utils.AllEvents
 import com.ls.dailytaskplanner.utils.AppUtils.toTimeString
 import com.ls.dailytaskplanner.utils.MediaPlayerManager
+import com.ls.dailytaskplanner.utils.TrackingHelper
 import com.ls.dailytaskplanner.utils.setSafeOnClickListener
 
 class TaskAdapter : ListAdapter<Task, TaskAdapter.TaskViewHolder>(TaskDiffCallback()) {
@@ -52,6 +54,7 @@ class TaskAdapter : ListAdapter<Task, TaskAdapter.TaskViewHolder>(TaskDiffCallba
             }
 
             binding.cbDone.setSafeOnClickListener {
+                TrackingHelper.logEvent(AllEvents.ACTION_CHANGE_STATUS_TASK)
                 if (binding.cbDone.isChecked) {
                     mediaPlayer.start()
                     MediaPlayerManager.playRawFile(R.raw.done)

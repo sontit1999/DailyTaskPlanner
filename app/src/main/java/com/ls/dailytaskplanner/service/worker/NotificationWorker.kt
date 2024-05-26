@@ -14,8 +14,11 @@ import androidx.work.WorkerParameters
 import com.ls.dailytaskplanner.R
 import com.ls.dailytaskplanner.database.storage.LocalStorage
 import com.ls.dailytaskplanner.ui.MainActivity
+import com.ls.dailytaskplanner.utils.AllEvents
+import com.ls.dailytaskplanner.utils.Constants
 import com.ls.dailytaskplanner.utils.Logger
 import com.ls.dailytaskplanner.utils.NotificationUtils
+import com.ls.dailytaskplanner.utils.TrackingHelper
 import java.time.Duration
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -32,6 +35,7 @@ class NotificationWorker(private val appContext: Context, workerParams: WorkerPa
     override suspend fun doWork(): Result {
         // Code to show notification goes here
         if (localStorage.enableNotifyApp) {
+            TrackingHelper.logEvent(AllEvents.NOTIFY_DAILY + "receive")
             NotificationUtils.showNotification(
                 appContext.getString(R.string.app_name),
                 appContext.getString(R.string.message_notify_daily_task_remind),
@@ -40,6 +44,7 @@ class NotificationWorker(private val appContext: Context, workerParams: WorkerPa
                     0,
                     Intent(appContext, MainActivity::class.java).apply {
                         addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                        putExtra(Constants.IntentKey.TYPE_NOTIFY,NotificationUtils.NOTIFY_DAILY_OFFLINE)
                     },
                     PendingIntent.FLAG_IMMUTABLE
                 )

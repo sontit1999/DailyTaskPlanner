@@ -49,6 +49,7 @@ object AdManager {
     var isDoingLoadNativeAddTask = false
     var nativeAgeLiveData = MutableLiveData<NativeAd>()
     var interSplash : InterstitialAd? = null
+    var bannerShowed = false
 
     fun initialize() {
         AppOpenAdManager.start()
@@ -58,7 +59,8 @@ object AdManager {
         view: FrameLayout,
         adKey: String,
         isShowCollapsible: Boolean = false,
-        autoRefresh: Boolean = false
+        autoRefresh: Boolean = false,
+        nameScreen : String
     ): AdView? {
         if (!RemoteConfig.commonConfig.isActiveAds || !RemoteConfig.commonConfig.supportBanner) {
             view.gone()
@@ -70,7 +72,7 @@ object AdManager {
 
                 override fun onAdClicked() {
                     super.onAdClicked()
-                    TrackingHelper.logEvent(AllEvents.E1_ADS_BANNER_CLICK)
+                    TrackingHelper.logEvent(AllEvents.BANNER_CLICK + nameScreen)
                 }
 
                 override fun onAdLoaded() {
@@ -82,15 +84,20 @@ object AdManager {
                     )
                     params.gravity = Gravity.BOTTOM
                     view.addView(adView, params)
-                    TrackingHelper.logEvent(AllEvents.E1_ADS_BANNER_LOAD_SUCCESS)
+                    TrackingHelper.logEvent(AllEvents.BANNER_LOAD_SUCCESS + nameScreen)
                     Logger.d("Banner load success")
                 }
 
                 override fun onAdFailedToLoad(p0: LoadAdError) {
-                    view.gone()
-                    TrackingHelper.logEvent(AllEvents.E1_ADS_BANNER_LOAD_FAIL)
+                    if (!bannerShowed) view.gone()
+                    TrackingHelper.logEvent(AllEvents.BANNER_LOAD_FAIL + nameScreen)
                     Logger.d("Banner load fail: ${p0.message}")
                     super.onAdFailedToLoad(p0)
+                }
+
+                override fun onAdImpression() {
+                    super.onAdImpression()
+                    bannerShowed = true
                 }
             }
             adView.adUnitId = adKey
@@ -128,19 +135,24 @@ object AdManager {
 
                 override fun onAdClicked() {
                     super.onAdClicked()
-                    TrackingHelper.logEvent(AllEvents.E1_ADS_NATIVE_ADD_TASK_CLICK)
+                    TrackingHelper.logEvent(AllEvents.NATIVE_ADD_TASK_CLICK)
                 }
 
                 override fun onAdFailedToLoad(loadAdError: LoadAdError) {
                     super.onAdFailedToLoad(loadAdError)
                     isDoingLoadNativeAddTask = false
-                    TrackingHelper.logEvent(AllEvents.E1_ADS_NATIVE_ADD_TASK_LOAD_FAIL)
+                    TrackingHelper.logEvent(AllEvents.NATIVE_ADD_TASK_LOAD_FAIL)
                 }
 
                 override fun onAdLoaded() {
                     super.onAdLoaded()
                     isDoingLoadNativeAddTask = false
-                    TrackingHelper.logEvent(AllEvents.E1_ADS_NATIVE_ADD_TASK_LOAD_SUCCESS)
+                    TrackingHelper.logEvent(AllEvents.NATIVE_ADD_TASK_LOAD_SUCCESS)
+                }
+
+                override fun onAdImpression() {
+                    super.onAdImpression()
+                    TrackingHelper.logEvent(AllEvents.NATIVE_ADD_TASK_IMPRESSION)
                 }
 
             }).build()
@@ -224,14 +236,14 @@ object AdManager {
                     // Called when an app open ad has loaded.
                     Logger.d("Open ad load success")
                     onLoadFinish.invoke(ad)
-                    TrackingHelper.logEvent(AllEvents.E1_ADS_OPEN_ADS_SPLASH_LOAD_SUCCESS)
+                    TrackingHelper.logEvent(AllEvents.OPEN_ADS_SPLASH_LOAD_SUCCESS)
                 }
 
                 override fun onAdFailedToLoad(loadAdError: LoadAdError) {
                     // Called when an app open ad has failed to load.
                     Logger.d("Open ad load fail : " + loadAdError.message)
                     onLoadFinish.invoke(null)
-                    TrackingHelper.logEvent(AllEvents.E1_ADS_OPEN_ADS_SPLASH_LOAD_FAIL)
+                    TrackingHelper.logEvent(AllEvents.OPEN_ADS_SPLASH_LOAD_FAIL)
                 }
             })
     }
@@ -309,14 +321,14 @@ object AdManager {
                 override fun onAdLoaded(p0: InterstitialAd) {
                     interstitialAd = p0
                     isDoingLoadInter = false
-                    TrackingHelper.logEvent(AllEvents.E1_ADS_INTER_LOAD_SUCCESS)
+                    TrackingHelper.logEvent(AllEvents.INTER_LOAD_SUCCESS)
                     Logger.d("Inter ads load success")
                 }
 
                 override fun onAdFailedToLoad(p0: LoadAdError) {
                     isDoingLoadInter = false
                     interstitialAd = null
-                    TrackingHelper.logEvent(AllEvents.E1_ADS_INTER_LOAD_FAIL)
+                    TrackingHelper.logEvent(AllEvents.INTER_LOAD_FAIL)
                     Logger.d("Inter ads load fail:${p0.message}")
                 }
             })
@@ -331,7 +343,7 @@ object AdManager {
         activity ?: return false
         return if (canShowInter || isForced) {
             if (interstitialAd == null) {
-                TrackingHelper.logEvent(AllEvents.E1_ADS_INTER_SHOW_FAIL_NO_ADS)
+                TrackingHelper.logEvent(AllEvents.INTER_SHOW_FAIL_NO_ADS)
                 Logger.d("Inter show fail because inter = null")
                 handleLoadInter()
                 false
@@ -340,7 +352,7 @@ object AdManager {
 
                     override fun onAdClicked() {
                         super.onAdClicked()
-                        TrackingHelper.logEvent(AllEvents.E1_ADS_INTER_CLICKED)
+                        TrackingHelper.logEvent(AllEvents.INTER_CLICKED)
                     }
 
                     override fun onAdFailedToShowFullScreenContent(p0: AdError) {
@@ -348,7 +360,7 @@ object AdManager {
                         EventBus.getDefault().post(InterAdEvent(false, tag))
                         interstitialAd = null
                         handleLoadInter()
-                        TrackingHelper.logEvent(AllEvents.E1_ADS_INTER_SHOW_FAIL)
+                        TrackingHelper.logEvent(AllEvents.INTER_SHOW_FAIL)
                         Logger.d("Inter show fail ")
                     }
 
@@ -364,7 +376,7 @@ object AdManager {
 
                     override fun onAdShowedFullScreenContent() {
                         isShowInterOrReward = true
-                        TrackingHelper.logEvent(AllEvents.E1_ADS_INTER_SHOW_SUCCESS)
+                        TrackingHelper.logEvent(AllEvents.INTER_SHOW_SUCCESS)
                         EventBus.getDefault().post(InterAdEvent(true, tag))
                         updateLastTimeShowInter(System.currentTimeMillis())
                         Logger.d("Inter show success ")

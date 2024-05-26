@@ -5,22 +5,22 @@ import com.google.gson.annotations.SerializedName
 class CommonConfig {
 
     @SerializedName(value = "isActiveAds")
-    var isActiveAds: Boolean = true
+    var isActiveAds: Boolean = false
 
     @SerializedName(value = "supportInter")
-    var supportInter: Boolean = true
+    var supportInter: Boolean = false
 
     @SerializedName(value = "supportNative")
-    var supportNative: Boolean = true
+    var supportNative: Boolean = false
 
     @SerializedName(value = "supportReward")
-    var supportReward: Boolean = true
+    var supportReward: Boolean = false
 
     @SerializedName(value = "supportBanner")
-    var supportBanner: Boolean = true
+    var supportBanner: Boolean = false
 
     @SerializedName(value = "supportOpenAds")
-    var supportOpenAds: Boolean = true
+    var supportOpenAds: Boolean = false
 
     @SerializedName(value = "waitingShowInter")
     var waitingShowInter: Int = 40
@@ -29,17 +29,7 @@ class CommonConfig {
     var latestVersion: String = ""
 
     @SerializedName(value = "packageName")
-    var packageName: String = "com.hs.entertainment.hotgirlwallpaper"
-
-
-    @SerializedName(value = "distanceNativeInList")
-    var distanceNativeInList: Int = 6
-
-    @SerializedName(value = "scenarioChangedWallpaper")
-    var scenarioChangedWallpaper: String = "24,24,48,72,168" // days
-
-    @SerializedName(value = "timeNotify10m")
-    var timeNotify10m: Int = 10
+    var packageName: String = ""
 
     @SerializedName(value = "versionCodeForReview")
     var versionCodeForReview: Int = 0
@@ -67,14 +57,5 @@ class CommonConfig {
 
     @SerializedName(value = "rewardAdKey")
     var rewardAdKey: String = "ca-app-pub-4945756407745123/5044685688"
-
-    @SerializedName(value = "numberOfNativeDisplay")
-    var numberOfNativeDisplay: Long = 4
-    
-    @SerializedName(value = "posAddNativeStart")
-    var posAddNativeStart: Int = 2
-    
-    @SerializedName(value = "distanceNativeAd")
-    var distanceNativeAd: Int = 7
 
 }

@@ -35,4 +35,6 @@ interface LocalStorage {
     var canShowOpenAd : Boolean
 
     var didChooseLanguage: Boolean
+
+    var openCount : Int
 }

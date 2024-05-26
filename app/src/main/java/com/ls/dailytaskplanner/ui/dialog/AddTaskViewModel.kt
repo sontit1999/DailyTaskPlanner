@@ -9,9 +9,11 @@ import com.ls.dailytaskplanner.database.TaskRepository
 import com.ls.dailytaskplanner.model.ColorTask
 import com.ls.dailytaskplanner.model.Task
 import com.ls.dailytaskplanner.model.eventbus.RefreshDataTask
+import com.ls.dailytaskplanner.utils.AllEvents
 import com.ls.dailytaskplanner.utils.AppUtils
 import com.ls.dailytaskplanner.utils.Logger
 import com.ls.dailytaskplanner.utils.SingleLiveEvent
+import com.ls.dailytaskplanner.utils.TrackingHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -71,6 +73,7 @@ class AddTaskViewModel @Inject constructor(
                 showToastLiveData.postValue(App.mInstance.getString(R.string.add_task_success))
                 statusUpdateTask.postValue(true)
                 EventBus.getDefault().post(RefreshDataTask())
+                TrackingHelper.logEvent(AllEvents.TASK_CREATE)
                 Logger.d(TAG, "Task added successfully: $task")
             } catch (e: Exception) {
                 Logger.e(TAG, "Error adding task: ${e.message}")
@@ -86,6 +89,7 @@ class AddTaskViewModel @Inject constructor(
                 showToastLiveData.postValue(App.mInstance.getString(R.string.task_updated))
                 statusUpdateTask.postValue(true)
                 Logger.d(TAG, "Task updated successfully")
+                TrackingHelper.logEvent(AllEvents.TASK_UPDATE)
             } catch (e: Exception) {
                 Logger.e(TAG, "Error updating task: ${e.message}")
             }

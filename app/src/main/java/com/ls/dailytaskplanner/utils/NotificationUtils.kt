@@ -19,6 +19,12 @@ object NotificationUtils {
     const val CHANNEL_ID = "ForegroundServiceChannel"
     const val CHANNEL_NAME = "Foreground Service Channel"
     const val CHANNEL_DESCRIPTION = "Channel for foreground service"
+    const val NOTIFY_DAILY_OFFLINE = 6
+    const val NOTIFY_SATURDAY = 5
+    const val NOTIFICATION_ID_REMIND_TASK = 1
+    const val NOTIFICATION_ID_SERVICE = 2
+    const val NOTIFICATION_ID_REMIND_CREATE_PLAN_TODAY = 3
+    const val NOTIFICATION_ID_UPDATE_STATUS_TASK = 4
 
     private val notificationManager =
         App.mInstance.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager

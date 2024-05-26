@@ -28,8 +28,10 @@ import com.ls.dailytaskplanner.databinding.DialogAddTaskBinding
 import com.ls.dailytaskplanner.model.Task
 import com.ls.dailytaskplanner.model.eventbus.InterAdEvent
 import com.ls.dailytaskplanner.model.eventbus.OpenAdEvent
+import com.ls.dailytaskplanner.utils.AllEvents
 import com.ls.dailytaskplanner.utils.AppUtils
 import com.ls.dailytaskplanner.utils.AppUtils.hiddenKeyboard
+import com.ls.dailytaskplanner.utils.TrackingHelper
 import com.ls.dailytaskplanner.utils.gone
 import com.ls.dailytaskplanner.utils.setSafeOnClickListener
 import com.ls.dailytaskplanner.utils.visible
@@ -95,6 +97,7 @@ class AddTaskDialog : DialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        TrackingHelper.logEvent(AllEvents.VIEW_ADD_TASK)
         initData()
         initRecyclerView()
         bindingAction()
@@ -168,6 +171,7 @@ class AddTaskDialog : DialogFragment() {
     private fun initRecyclerView() {
         chooseColorAdapter = ChooseColorAdapter()
         chooseColorAdapter.onClickItem = {
+            TrackingHelper.logEvent(AllEvents.ACTION_CHOOSE_COLOR)
             viewModel.task.color = it.color
             binding.container.setBackgroundColor(Color.parseColor(it.color))
             binding.nestedScrollView.setBackgroundColor(Color.parseColor(it.color))
@@ -230,6 +234,7 @@ class AddTaskDialog : DialogFragment() {
 
         binding.swReminder.setOnCheckedChangeListener { _, isChecked ->
             viewModel.task.isReminder = isChecked
+            TrackingHelper.logEvent(AllEvents.ACTION_CHANGE_REMIND_TASK)
         }
 
         binding.tvCreate.setSafeOnClickListener {
@@ -237,6 +242,7 @@ class AddTaskDialog : DialogFragment() {
         }
 
         binding.ivClose.setSafeOnClickListener {
+            TrackingHelper.logEvent(AllEvents.ACTION_CANCEL_ADD_TASK)
             if (!AdManager.showInter(false, TAG_INTER_ADD_TASK)) dismiss()
         }
     }
@@ -254,6 +260,7 @@ class AddTaskDialog : DialogFragment() {
     }
 
     private fun showDatePicker() {
+        TrackingHelper.logEvent(AllEvents.ACTION_CHOOSE_DATE_TASK)
         val datePickerPopup = DatePickerPopup.Builder()
             .from(context)
             .offset(1)
@@ -282,6 +289,7 @@ class AddTaskDialog : DialogFragment() {
     }
 
     private fun showTimePicker() {
+        TrackingHelper.logEvent(AllEvents.ACTION_CHOOSE_TIME)
         val pickerPopup = TimePickerPopup.Builder()
             .from(context)
             .offset(1)

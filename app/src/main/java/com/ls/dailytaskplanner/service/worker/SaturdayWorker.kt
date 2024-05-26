@@ -14,8 +14,11 @@ import androidx.work.WorkerParameters
 import com.ls.dailytaskplanner.R
 import com.ls.dailytaskplanner.database.storage.LocalStorage
 import com.ls.dailytaskplanner.ui.MainActivity
+import com.ls.dailytaskplanner.utils.AllEvents
+import com.ls.dailytaskplanner.utils.Constants
 import com.ls.dailytaskplanner.utils.Logger
 import com.ls.dailytaskplanner.utils.NotificationUtils
+import com.ls.dailytaskplanner.utils.TrackingHelper
 import java.time.DayOfWeek
 import java.time.Duration
 import java.time.LocalDate
@@ -35,6 +38,7 @@ class SaturdayWorker(private val appContext: Context, workerParams: WorkerParame
     override suspend fun doWork(): Result {
         // Code to show notification goes here
         if (localStorage.enableNotifyApp) {
+            TrackingHelper.logEvent(AllEvents.NOTIFY_SATURDAY + "receive")
             NotificationUtils.showNotification(
                 appContext.getString(R.string.app_name),
                 appContext.getString(R.string.notify_saturday),
@@ -43,6 +47,7 @@ class SaturdayWorker(private val appContext: Context, workerParams: WorkerParame
                     0,
                     Intent(appContext, MainActivity::class.java).apply {
                         addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                        putExtra(Constants.IntentKey.TYPE_NOTIFY,NotificationUtils.NOTIFY_SATURDAY)
                     },
                     PendingIntent.FLAG_IMMUTABLE
                 )

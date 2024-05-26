@@ -19,10 +19,17 @@ import com.ls.dailytaskplanner.database.TaskRepository
 import com.ls.dailytaskplanner.database.storage.LocalStorage
 import com.ls.dailytaskplanner.model.Task
 import com.ls.dailytaskplanner.ui.MainActivity
+import com.ls.dailytaskplanner.utils.AllEvents
 import com.ls.dailytaskplanner.utils.AppUtils
 import com.ls.dailytaskplanner.utils.AppUtils.calculateTimeRemaining
+import com.ls.dailytaskplanner.utils.Constants
 import com.ls.dailytaskplanner.utils.Logger
 import com.ls.dailytaskplanner.utils.NotificationUtils
+import com.ls.dailytaskplanner.utils.NotificationUtils.NOTIFICATION_ID_REMIND_CREATE_PLAN_TODAY
+import com.ls.dailytaskplanner.utils.NotificationUtils.NOTIFICATION_ID_REMIND_TASK
+import com.ls.dailytaskplanner.utils.NotificationUtils.NOTIFICATION_ID_SERVICE
+import com.ls.dailytaskplanner.utils.NotificationUtils.NOTIFICATION_ID_UPDATE_STATUS_TASK
+import com.ls.dailytaskplanner.utils.TrackingHelper
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -103,6 +110,7 @@ class ForegroundService : Service() {
         if (timeRemaining in 1..localStorage.remindTaskBefore.toInt() && !it.didReminder) {
             it.didReminder = true
             taskRepository.updateTask(it)
+            TrackingHelper.logEvent(AllEvents.NOTIFY_REMIND_TASK + "receive")
             NotificationUtils.showNotificationRemindTask(
                 this@ForegroundService,
                 it.title + " " + getString(R.string.remind_task_start_after) + " " + timeRemaining + " " + getString(
@@ -114,6 +122,8 @@ class ForegroundService : Service() {
                     0,
                     Intent(this@ForegroundService, MainActivity::class.java).apply {
                         addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                        putExtra(Constants.IntentKey.TYPE_NOTIFY,
+                            NOTIFICATION_ID_REMIND_TASK)
                     },
                     PendingIntent.FLAG_IMMUTABLE
                 ),
@@ -131,6 +141,7 @@ class ForegroundService : Service() {
         val lastTimeInviteCreatePlan = localStorage.lastTimeInviteCreatePlan
         if (lastTimeInviteCreatePlan == 0L || System.currentTimeMillis() - lastTimeInviteCreatePlan > 4 * 60 * 60 * 1000) { // 4h
             localStorage.lastTimeInviteCreatePlan = System.currentTimeMillis()
+            TrackingHelper.logEvent(AllEvents.NOTIFY_INVITE_CREATE_PLAN + "receive")
             NotificationUtils.showNotification(
                 getString(R.string.effective_plan),
                 getString(R.string.effective_plan_des),
@@ -139,6 +150,8 @@ class ForegroundService : Service() {
                     0,
                     Intent(this@ForegroundService, MainActivity::class.java).apply {
                         addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                        putExtra(Constants.IntentKey.TYPE_NOTIFY,
+                            NOTIFICATION_ID_REMIND_CREATE_PLAN_TODAY)
                     },
                     PendingIntent.FLAG_IMMUTABLE
                 ),
@@ -156,12 +169,14 @@ class ForegroundService : Service() {
     override fun onCreate() {
         super.onCreate()
         mediaPlayer = MediaPlayer.create(this, R.raw.me_sound)
+        TrackingHelper.logEvent(AllEvents.SERVICE_ON_CREATE)
         Logger.d(TAG, "Service created")
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("ForegroundServiceType")
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        TrackingHelper.logEvent(AllEvents.SERVICE_ON_START_COMMAND)
         Logger.d(TAG, "Service onStartCommand ")
         // Create a notification channel for Android 8.0 and above
         NotificationUtils.createNotificationChannel()
@@ -204,6 +219,7 @@ class ForegroundService : Service() {
                 val listTask = taskRepository.getTasksByDate(AppUtils.getCurrentDate())
                 val totalTask = listTask.size
                 val numTaskDone = listTask.count { it.isCompleted }
+                TrackingHelper.logEvent(AllEvents.NOTIFY_UPDATE_STATUS_TASK + "receive")
                 NotificationUtils.showNotifyNormal(
                     this@ForegroundService,
                     getString(R.string.congratulation),
@@ -213,6 +229,8 @@ class ForegroundService : Service() {
                         0,
                         Intent(this@ForegroundService, MainActivity::class.java).apply {
                             addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                            putExtra(Constants.IntentKey.TYPE_NOTIFY,
+                                NOTIFICATION_ID_UPDATE_STATUS_TASK)
                         },
                         PendingIntent.FLAG_IMMUTABLE
                     ),
@@ -233,6 +251,7 @@ class ForegroundService : Service() {
 
     override fun onDestroy() {
         super.onDestroy()
+        TrackingHelper.logEvent(AllEvents.SERVICE_DESTROY)
         serviceScope.cancel()
         isServiceRunning = false
         unregisterReceiver(broadcastReceiver)
@@ -241,6 +260,7 @@ class ForegroundService : Service() {
 
     override fun onTaskRemoved(rootIntent: Intent?) {
         super.onTaskRemoved(rootIntent)
+        TrackingHelper.logEvent(AllEvents.SERVICE_REMOVE_TASK)
         Logger.d(TAG, "Service onTaskRemoved")
     }
 
@@ -273,10 +293,6 @@ class ForegroundService : Service() {
     companion object {
 
         const val TAG = "ForegroundServiceTask"
-        const val NOTIFICATION_ID_REMIND_TASK = 1
-        const val NOTIFICATION_ID_SERVICE = 2
-        const val NOTIFICATION_ID_REMIND_CREATE_PLAN_TODAY = 3
-        const val NOTIFICATION_ID_UPDATE_STATUS_TASK = 4
         const val TIME_CHECK_TASK = 60 * 1000L
         const val TIME_USER_ACTIVE_10_MINUTES = 10 * 60 * 1000L
 

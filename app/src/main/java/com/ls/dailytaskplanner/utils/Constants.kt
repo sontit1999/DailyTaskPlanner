@@ -32,5 +32,10 @@ object Constants {
         const val KEY_LAST_TIME_NOTIFY_UPDATE_TASK = "last_time_notify_update_task"
         const val KEY_CAN_SHOW_OPEN_ADS = "can_show_open_ads"
         const val KEY_DID_CHOOSE_LANGUAGE = "did_choose_language"
+        const val KEY_OPEN_COUNT = "open_count"
+    }
+
+    object IntentKey {
+        const val TYPE_NOTIFY = "type_notify"
     }
 }

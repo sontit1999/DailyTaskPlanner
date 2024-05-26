@@ -3,7 +3,7 @@ package com.ls.dailytaskplanner.utils
 import com.ls.dailytaskplanner.model.ConfigModel
 
 object RemoteConfig {
-    private var configModel = ConfigModel()
+    var configModel = ConfigModel()
 
     val commonConfig
         get() = configModel.commonInfo

@@ -25,8 +25,10 @@ import com.ls.dailytaskplanner.databinding.FragHomeBinding
 import com.ls.dailytaskplanner.model.eventbus.RefreshDataTask
 import com.ls.dailytaskplanner.ui.dialog.AddTaskDialog
 import com.ls.dailytaskplanner.ui.home.adapter.TaskAdapter
+import com.ls.dailytaskplanner.utils.AllEvents
 import com.ls.dailytaskplanner.utils.AppUtils
 import com.ls.dailytaskplanner.utils.MediaPlayerManager
+import com.ls.dailytaskplanner.utils.TrackingHelper
 import com.ls.dailytaskplanner.utils.setSafeOnClickListener
 import dagger.hilt.android.AndroidEntryPoint
 import org.greenrobot.eventbus.EventBus
@@ -58,6 +60,7 @@ class HomeFragment : BaseFragment<FragHomeBinding, HomeViewModel>() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun viewCreated() {
+        TrackingHelper.logEvent(AllEvents.VIEW_HOME)
         initRvTask()
         initCalender()
         viewModel.getTaskByDate(AppUtils.getCurrentDate(),true)
@@ -118,6 +121,7 @@ class HomeFragment : BaseFragment<FragHomeBinding, HomeViewModel>() {
             onClickListener = {
                 selectedDateString = it.date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
                 viewModel.getTaskByDate(selectedDateString)
+                TrackingHelper.logEvent(AllEvents.ACTION_CHOOSE_DATE)
             }
         )
         binding.calendarView.scrollToDate(LocalDate.now())
@@ -163,9 +167,11 @@ class HomeFragment : BaseFragment<FragHomeBinding, HomeViewModel>() {
     override fun bindingAction() {
         binding.btnAdd.setSafeOnClickListener {
             AddTaskDialog.newInstance(null,selectedDateString).show(childFragmentManager, AddTaskDialog.TAG)
+            TrackingHelper.logEvent(AllEvents.ACTION_ADD_TASK)
         }
 
         binding.tvToday.setSafeOnClickListener {
+            TrackingHelper.logEvent(AllEvents.ACTION_CHOOSE_TODAY)
             binding.calendarView.smoothScrollToDate(LocalDate.now())
         }
     }

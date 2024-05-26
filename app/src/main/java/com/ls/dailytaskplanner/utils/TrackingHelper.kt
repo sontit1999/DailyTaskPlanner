@@ -1,18 +1,22 @@
 package com.ls.dailytaskplanner.utils
 
 import android.os.Bundle
-import com.ls.dailytaskplanner.App
 import com.google.firebase.BuildConfig
 import com.google.firebase.analytics.FirebaseAnalytics
+import com.ls.dailytaskplanner.App
 
 
 object TrackingHelper {
     private var mFirebaseAnalytics: FirebaseAnalytics? = null
 
     fun init() {
-        if (mFirebaseAnalytics == null) {
-            mFirebaseAnalytics =
-                FirebaseAnalytics.getInstance(App.mInstance.applicationContext)
+        try {
+            if (mFirebaseAnalytics == null) {
+                mFirebaseAnalytics =
+                    FirebaseAnalytics.getInstance(App.mInstance.applicationContext)
+            }
+        } catch (e : Exception) {
+            Logger.d("Fail init because: " + e.message)
         }
     }
 

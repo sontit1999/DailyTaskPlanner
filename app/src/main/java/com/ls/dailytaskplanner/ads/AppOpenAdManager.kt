@@ -64,14 +64,14 @@ object AppOpenAdManager : Application.ActivityLifecycleCallbacks, LifecycleObser
                     appOpenAd = ad
                     isLoadingAd = false
                     loadTime = Date().time
-                    TrackingHelper.logEvent(AllEvents.E1_ADS_OPEN_ADS_LOAD_SUCCESS)
+                    TrackingHelper.logEvent(AllEvents.OPEN_ADS_LOAD_SUCCESS)
                 }
 
                 override fun onAdFailedToLoad(loadAdError: LoadAdError) {
                     // Called when an app open ad has failed to load.
                     Logger.d("Open ad load fail : " + loadAdError.message)
                     isLoadingAd = false
-                    TrackingHelper.logEvent(AllEvents.E1_ADS_OPEN_ADS_LOAD_FAIL)
+                    TrackingHelper.logEvent(AllEvents.OPEN_ADS_LOAD_FAIL)
                 }
             })
     }
@@ -98,7 +98,7 @@ object AppOpenAdManager : Application.ActivityLifecycleCallbacks, LifecycleObser
         if (!isAdAvailable()) {
             Logger.d("The app open ad is not ready yet")
             loadAd(activity)
-            TrackingHelper.logEvent(AllEvents.E1_ADS_OPEN_ADS_SHOW_FAIL_NO_ADS)
+            TrackingHelper.logEvent(AllEvents.OPEN_ADS_SHOW_FAIL_NO_ADS)
             return
         }
 
@@ -120,7 +120,7 @@ object AppOpenAdManager : Application.ActivityLifecycleCallbacks, LifecycleObser
                 Logger.d("Open Ads: onAdFailedToShowFullScreenContent")
                 appOpenAd = null
                 loadAd(activity)
-                TrackingHelper.logEvent(AllEvents.E1_ADS_OPEN_ADS_SHOW_FAIL)
+                TrackingHelper.logEvent(AllEvents.OPEN_ADS_SHOW_FAIL)
             }
 
             override fun onAdShowedFullScreenContent() {
@@ -128,7 +128,12 @@ object AppOpenAdManager : Application.ActivityLifecycleCallbacks, LifecycleObser
                 EventBus.getDefault().post(OpenAdEvent(true))
                 // Called when fullscreen content is shown.
                 Logger.d("Open Ads: onAdShowedFullScreenContent")
-                TrackingHelper.logEvent(AllEvents.E1_ADS_OPEN_ADS_SHOW_SUCCESS)
+                TrackingHelper.logEvent(AllEvents.OPEN_ADS_SHOW_SUCCESS)
+            }
+
+            override fun onAdClicked() {
+                super.onAdClicked()
+                TrackingHelper.logEvent(AllEvents.OPEN_ADS_CLICKED)
             }
         }
         appOpenAd?.show(activity)
