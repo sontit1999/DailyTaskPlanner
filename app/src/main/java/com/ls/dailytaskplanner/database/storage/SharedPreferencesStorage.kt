@@ -1,11 +1,11 @@
 package com.ls.dailytaskplanner.database.storage
 
 import android.content.Context
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.ls.dailytaskplanner.utils.AES
 import com.ls.dailytaskplanner.utils.Constants
 import com.ls.dailytaskplanner.utils.toHex
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import kotlin.reflect.KClass
@@ -111,6 +111,11 @@ class SharedPreferencesStorage @Inject constructor(
         get() = getData(Constants.SharedPrefKey.KEY_ENABLE_NOTIFY, Boolean::class) ?: true
         set(value) {
             putData(Constants.SharedPrefKey.KEY_ENABLE_NOTIFY, value)
+        }
+    override var didChooseLanguage: Boolean
+        get() = getData(Constants.SharedPrefKey.KEY_DID_CHOOSE_LANGUAGE, Boolean::class) ?: false
+        set(value) {
+            putData(Constants.SharedPrefKey.KEY_DID_CHOOSE_LANGUAGE, value)
         }
 
 }

@@ -10,26 +10,27 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
 import androidx.lifecycle.ProcessLifecycleOwner
+import com.google.android.gms.ads.AdError
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.FullScreenContentCallback
+import com.google.android.gms.ads.LoadAdError
+import com.google.android.gms.ads.appopen.AppOpenAd
 import com.ls.dailytaskplanner.App
 import com.ls.dailytaskplanner.model.eventbus.OpenAdEvent
 import com.ls.dailytaskplanner.utils.AllEvents
 import com.ls.dailytaskplanner.utils.Logger
 import com.ls.dailytaskplanner.utils.RemoteConfig
 import com.ls.dailytaskplanner.utils.TrackingHelper
-import com.google.android.gms.ads.AdError
-import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.FullScreenContentCallback
-import com.google.android.gms.ads.LoadAdError
-import com.google.android.gms.ads.appopen.AppOpenAd
 import org.greenrobot.eventbus.EventBus
 import java.lang.ref.WeakReference
-import java.util.*
+import java.util.Date
 
 object AppOpenAdManager : Application.ActivityLifecycleCallbacks, LifecycleObserver {
 
     private var appOpenAd: AppOpenAd? = null
     private var isLoadingAd = false
     var isShowingAd = false
+    var isShowingOpenAdOpenApp = false
     var currentActivity: WeakReference<Activity>? = null
 
     /** Keep track of the time an app open ad is loaded to ensure you don't show an expired ad. */
@@ -86,9 +87,9 @@ object AppOpenAdManager : Application.ActivityLifecycleCallbacks, LifecycleObser
         activity: Activity
     ) {
 
-        if (!RemoteConfig.commonConfig.supportOpenAds || !RemoteConfig.commonConfig.isActiveAds) return
+        if (!RemoteConfig.commonConfig.supportOpenAds || !RemoteConfig.commonConfig.isActiveAds ) return
         // If the app open ad is already showing, do not show the ad again.
-        if (isShowingAd || AdManager.isShowInterOrReward) {
+        if (isShowingAd || AdManager.isShowInterOrReward || isShowingOpenAdOpenApp) {
             Logger.d("The app open ad is already showing")
             return
         }

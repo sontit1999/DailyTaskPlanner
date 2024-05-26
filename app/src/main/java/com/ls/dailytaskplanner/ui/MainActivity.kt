@@ -2,30 +2,46 @@ package com.ls.dailytaskplanner.ui
 
 import android.os.Build
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.widget.FrameLayout
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.ads.AdError
 import com.google.android.gms.ads.FullScreenContentCallback
+import com.google.android.gms.ads.nativead.NativeAdView
 import com.ls.dailytaskplanner.R
+import com.ls.dailytaskplanner.adapter.LanguageAdapter
 import com.ls.dailytaskplanner.adapter.MainPagerAdapter
 import com.ls.dailytaskplanner.ads.AdManager
+import com.ls.dailytaskplanner.ads.AppOpenAdManager
+import com.ls.dailytaskplanner.database.storage.LocalStorage
 import com.ls.dailytaskplanner.databinding.ActivityMainBinding
+import com.ls.dailytaskplanner.model.Language
 import com.ls.dailytaskplanner.model.eventbus.OpenAdEvent
 import com.ls.dailytaskplanner.utils.AppUtils
+import com.ls.dailytaskplanner.utils.Logger
+import com.ls.dailytaskplanner.utils.MediaPlayerManager
 import com.ls.dailytaskplanner.utils.NotificationUtils
 import com.ls.dailytaskplanner.utils.RemoteConfig
 import com.ls.dailytaskplanner.utils.gone
+import com.ls.dailytaskplanner.utils.invisible
+import com.ls.dailytaskplanner.utils.setSafeOnClickListener
 import com.ls.dailytaskplanner.utils.visible
 import dagger.hilt.android.AndroidEntryPoint
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
+import javax.inject.Inject
 
 
 @AndroidEntryPoint
 class MainActivity : FragmentActivity() {
+
+    @Inject
+    lateinit var storage: LocalStorage
 
     private lateinit var binding: ActivityMainBinding
     private val viewModel: MainViewModel by viewModels()
@@ -38,7 +54,56 @@ class MainActivity : FragmentActivity() {
         AppUtils.startTaskService()
         setUpViewPager()
         setUpBottomNavigation()
+        initRvLanguage()
         handleLoadShowOpenAd()
+    }
+
+    private fun initRvLanguage() {
+        if (storage.didChooseLanguage) return
+        binding.btnContinueAb.setSafeOnClickListener {
+            storage.didChooseLanguage = true
+            hiddenLayoutLanguage()
+        }
+        val adapter = LanguageAdapter(this)
+        binding.rvLanguage.adapter = adapter
+        binding.rvLanguage.setHasFixedSize(true)
+        binding.rvLanguage.layoutManager =
+            LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        adapter.setData(
+            mutableListOf(
+                Language(R.drawable.us, "English", "en"),
+                Language(R.drawable.vn, "Tiếng việt", "vi"),
+                Language(R.drawable.pt, "Português", "pt"),
+                Language(R.drawable.mx, "Español", "es"),
+                Language(R.drawable.ic_polish, "Język polski", "pl"),
+                Language(R.drawable.ic_cezch, "čeština", "cs"),
+                Language(R.drawable.ic_de, "Deutsch", "de"),
+                Language(R.drawable.fr, "Français", "fr"),
+                Language(R.drawable.jp, "日本語", "ja"),
+                Language(R.drawable.kr, "한국어", "ko")
+            )
+        )
+
+        AdManager.nativeAgeLiveData.observe(this) {
+            if (it != null) {
+                binding.containerAdNative.visible()
+                val frameLayout: FrameLayout = binding.containerAdNative
+                val adView = LayoutInflater.from(this).inflate(
+                    R.layout.native_add_task, null
+                ) as NativeAdView
+                AdManager.populateUnifiedNativeAdView(it, adView)
+                frameLayout.removeAllViews()
+                frameLayout.addView(adView)
+            }
+        }
+    }
+
+    private fun hiddenLayoutLanguage() {
+        AdManager.loadAdIfNeed(this)
+        AdManager.showInterSplash(onFinish = {
+            loadBannerAd()
+            binding.layoutLanguage.gone()
+        }, this)
     }
 
     private fun handleLoadShowOpenAd() {
@@ -50,6 +115,7 @@ class MainActivity : FragmentActivity() {
                         // Called when full screen content is dismissed.
                         // Set the reference to null so isAdAvailable() returns false.
                         hiddenSplash()
+                        AppOpenAdManager.isShowingOpenAdOpenApp = false
                     }
 
                     override fun onAdFailedToShowFullScreenContent(adError: AdError) {
@@ -57,7 +123,7 @@ class MainActivity : FragmentActivity() {
                     }
 
                     override fun onAdShowedFullScreenContent() {
-
+                        AppOpenAdManager.isShowingOpenAdOpenApp = true
                     }
                 }
                 openAd.show(this)
@@ -69,8 +135,13 @@ class MainActivity : FragmentActivity() {
 
     fun hiddenSplash() {
         binding.layoutSplash.gone()
-        loadBannerAd()
-        AdManager.loadAdIfNeed(this)
+        if (!storage.didChooseLanguage) {
+            binding.layoutLanguage.visible()
+            AdManager.handleLoadInterSplash()
+        } else {
+            loadBannerAd()
+            AdManager.loadAdIfNeed(this)
+        }
     }
 
     private fun loadBannerAd() {
@@ -104,7 +175,11 @@ class MainActivity : FragmentActivity() {
     fun openAdEvent(event: OpenAdEvent) {
         if (event.isShow) {
             binding.containerAd.gone()
-        } else binding.containerAd.visible()
+            binding.containerAdNative.invisible()
+        } else {
+            binding.containerAd.visible()
+            binding.containerAdNative.visible()
+        }
     }
 
     fun addFragment(fragment: Fragment) {
@@ -130,8 +205,13 @@ class MainActivity : FragmentActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
+        Logger.d(TAG, "onDestroy Main")
         EventBus.getDefault().unregister(this)
+        MediaPlayerManager.stopPlaying()
         AdManager.destroyAll()
     }
 
+    companion object {
+        private const val TAG = "MainActivity"
+    }
 }

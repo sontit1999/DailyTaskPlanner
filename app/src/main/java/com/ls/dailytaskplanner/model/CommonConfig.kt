@@ -62,6 +62,9 @@ class CommonConfig {
     @SerializedName(value = "nativeListAdKey")
     var nativeListAdKey: String = "ca-app-pub-4945756407745123/3901040699"
 
+    @SerializedName(value = "nativeAgeKey")
+    var nativeAgeKey: String = "ca-app-pub-4945756407745123/6375661806"
+
     @SerializedName(value = "rewardAdKey")
     var rewardAdKey: String = "ca-app-pub-4945756407745123/5044685688"
 

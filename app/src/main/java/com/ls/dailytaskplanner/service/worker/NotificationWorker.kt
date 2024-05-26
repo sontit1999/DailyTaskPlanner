@@ -38,7 +38,9 @@ class NotificationWorker(private val appContext: Context, workerParams: WorkerPa
                 PendingIntent.getActivity(
                     appContext,
                     0,
-                    Intent(appContext, MainActivity::class.java),
+                    Intent(appContext, MainActivity::class.java).apply {
+                        addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                    },
                     PendingIntent.FLAG_IMMUTABLE
                 )
             )

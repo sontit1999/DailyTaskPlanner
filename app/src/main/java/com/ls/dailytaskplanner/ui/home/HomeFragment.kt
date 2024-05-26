@@ -26,6 +26,7 @@ import com.ls.dailytaskplanner.model.eventbus.RefreshDataTask
 import com.ls.dailytaskplanner.ui.dialog.AddTaskDialog
 import com.ls.dailytaskplanner.ui.home.adapter.TaskAdapter
 import com.ls.dailytaskplanner.utils.AppUtils
+import com.ls.dailytaskplanner.utils.MediaPlayerManager
 import com.ls.dailytaskplanner.utils.setSafeOnClickListener
 import dagger.hilt.android.AndroidEntryPoint
 import org.greenrobot.eventbus.EventBus
@@ -141,6 +142,8 @@ class HomeFragment : BaseFragment<FragHomeBinding, HomeViewModel>() {
                 Toast.makeText(context, getString(R.string.congratulation_done_task), Toast.LENGTH_SHORT).show()
                 binding.lavCongratulation.isVisible = true
                 binding.lavCongratulation.playAnimation()
+                MediaPlayerManager.stopPlaying()
+                MediaPlayerManager.playRawFile(R.raw.congratulation_sound)
             }
         }
     }

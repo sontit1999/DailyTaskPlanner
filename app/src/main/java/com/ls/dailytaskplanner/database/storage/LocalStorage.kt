@@ -33,4 +33,6 @@ interface LocalStorage {
     var lastTimeNotifyUpdateStatusTask : Long
 
     var canShowOpenAd : Boolean
+
+    var didChooseLanguage: Boolean
 }

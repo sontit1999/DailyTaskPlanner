@@ -38,4 +38,6 @@
     <string name="loading_ad">Loading ad ...</string>
     <string name="msg_btn_continue">Continue</string>
     <string name="please_enter_title">Please enter the name of the task</string>
+    <string name="msg_language">Language</string>
+    <string name="ok">Ok</string>
 </resources>

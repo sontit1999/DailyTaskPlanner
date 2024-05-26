@@ -1,6 +1,7 @@
 package com.ls.dailytaskplanner.ui.home.adapter
 
 import android.graphics.Color
+import android.media.MediaPlayer
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -11,13 +12,14 @@ import com.ls.dailytaskplanner.R
 import com.ls.dailytaskplanner.databinding.ItemTaskBinding
 import com.ls.dailytaskplanner.model.Task
 import com.ls.dailytaskplanner.utils.AppUtils.toTimeString
+import com.ls.dailytaskplanner.utils.MediaPlayerManager
 import com.ls.dailytaskplanner.utils.setSafeOnClickListener
 
 class TaskAdapter : ListAdapter<Task, TaskAdapter.TaskViewHolder>(TaskDiffCallback()) {
 
     var onClickItem: ((Task) -> Unit)? = null
     var onClickCheckbox: ((Task) -> Unit)? = null
-
+    private var mediaPlayer = MediaPlayer.create(App.mInstance.applicationContext, R.raw.done)
 
     fun removeItem(position: Int) {
         val task = getItem(position)
@@ -45,14 +47,17 @@ class TaskAdapter : ListAdapter<Task, TaskAdapter.TaskViewHolder>(TaskDiffCallba
 
         init {
 
-            binding.root.setOnClickListener {
+            binding.root.setSafeOnClickListener {
                 onClickItem?.invoke(getItem(adapterPosition))
             }
 
             binding.cbDone.setSafeOnClickListener {
+                if (binding.cbDone.isChecked) {
+                    mediaPlayer.start()
+                    MediaPlayerManager.playRawFile(R.raw.done)
+                }
                 onClickCheckbox?.invoke(getItem(adapterPosition))
             }
-
         }
 
         fun bindData(task: Task) {

@@ -1,5 +1,6 @@
 package com.ls.dailytaskplanner.ads
 
+import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.view.Gravity
@@ -40,14 +41,14 @@ import java.util.UUID
 
 object AdManager {
     const val TAG_INTER_ADD_TASK = "TAG_INTER_ADD_TASK"
-    const val TAG_BACK_INTER_ALL = "TAG_BACK_INTER_ALL"
-
     private var isDoingLoadInter = false
     private var interstitialAd: InterstitialAd? = null
     private var showedInterstitialLastTime = 0L
     var isShowInterOrReward = false
     var nativeAddTaskLiveData = MutableLiveData<NativeAd>()
     var isDoingLoadNativeAddTask = false
+    var nativeAgeLiveData = MutableLiveData<NativeAd>()
+    var interSplash : InterstitialAd? = null
 
     fun initialize() {
         AppOpenAdManager.start()
@@ -147,11 +148,52 @@ object AdManager {
         isDoingLoadNativeAddTask = true
     }
 
+    fun loadNativeAge() {
+        if (!RemoteConfig.commonConfig.isActiveAds || !RemoteConfig.commonConfig.supportNative || nativeAgeLiveData.value != null ) return
+
+        val builder: AdLoader.Builder = AdLoader.Builder(
+            App.mInstance, RemoteConfig.commonConfig.nativeAgeKey
+        )
+        builder.forNativeAd { ad ->
+            nativeAgeLiveData.postValue(ad)
+        }
+        val videoOptions = VideoOptions.Builder()
+            .setStartMuted(true)
+            .build()
+        val adOptions = NativeAdOptions.Builder()
+            .setVideoOptions(videoOptions)
+            .build()
+        val adLoader = builder.withNativeAdOptions(adOptions)
+            .withAdListener(object : AdListener() {
+
+                override fun onAdClicked() {
+                    super.onAdClicked()
+                    TrackingHelper.logEvent(AllEvents.NATIVE_AGE_CLICK)
+                }
+
+                override fun onAdFailedToLoad(loadAdError: LoadAdError) {
+                    super.onAdFailedToLoad(loadAdError)
+                    TrackingHelper.logEvent(AllEvents.NATIVE_AGE_LOAD_FAIL)
+                }
+
+                override fun onAdLoaded() {
+                    super.onAdLoaded()
+                    TrackingHelper.logEvent(AllEvents.NATIVE_AGE_LOAD_SUCCESS)
+                }
+
+                override fun onAdImpression() {
+                    super.onAdImpression()
+                    TrackingHelper.logEvent(AllEvents.NATIVE_AGE_IMPRESSION)
+                }
+
+            }).build()
+        adLoader.loadAd(buildAdRequest())
+    }
+
     fun populateUnifiedNativeAdView(
         nativeAd: NativeAd?,
         adView: NativeAdView
     ) {
-
         if (nativeAd == null) {
             return
         }
@@ -192,6 +234,65 @@ object AdManager {
                     TrackingHelper.logEvent(AllEvents.E1_ADS_OPEN_ADS_SPLASH_LOAD_FAIL)
                 }
             })
+    }
+
+    fun handleLoadInterSplash() {
+        if (!RemoteConfig.commonConfig.supportInter || !RemoteConfig.commonConfig.isActiveAds) return
+        InterstitialAd.load(
+            App.mInstance,
+            RemoteConfig.commonConfig.interSplashAdKey,
+            buildAdRequest(), object : InterstitialAdLoadCallback() {
+                override fun onAdLoaded(p0: InterstitialAd) {
+                    interSplash = p0
+                    TrackingHelper.logEvent(AllEvents.INTER_SPLASH_LOAD_SUCCESS)
+                    Logger.d("Inter splash load success")
+                }
+
+                override fun onAdFailedToLoad(p0: LoadAdError) {
+                    interstitialAd = null
+                    TrackingHelper.logEvent(AllEvents.INTER_SPLASH_LOAD_FAIL)
+                    Logger.d("Inter Splash load fail:${p0.message}")
+                }
+            })
+    }
+
+    fun showInterSplash(onFinish: () -> Unit, activity: Activity): Boolean {
+        return if (canShowInter) {
+            if (interSplash == null) {
+                onFinish.invoke()
+                TrackingHelper.logEvent(AllEvents.INTER_SPLASH_SHOW_FAIL_NO_ADS)
+                Logger.d("Inter Splash show fail because inter = null")
+                false
+            } else {
+                interSplash!!.fullScreenContentCallback = object : FullScreenContentCallback() {
+
+                    override fun onAdFailedToShowFullScreenContent(p0: AdError) {
+                        onFinish.invoke()
+                        interSplash = null
+                        TrackingHelper.logEvent(AllEvents.INTER_SPLASH_SHOW_FAIL)
+                        Logger.d("Inter Splash show fail ")
+                    }
+
+                    override fun onAdDismissedFullScreenContent() {
+                        onFinish.invoke()
+                        isShowInterOrReward = false
+                        showedInterstitialLastTime = System.currentTimeMillis()
+                        interSplash = null
+                        Logger.d("Inter Splash dismiss ")
+                    }
+
+                    override fun onAdShowedFullScreenContent() {
+                        isShowInterOrReward = true
+                        TrackingHelper.logEvent(AllEvents.INTER_SPLASH_SHOW_SUCCESS)
+                        Logger.d("Inter Splash show success ")
+                    }
+
+                }
+                interSplash!!.show(activity)
+                interSplash = null
+                true
+            }
+        } else false
     }
 
     private fun isInterAvailable() = interstitialAd != null

@@ -112,7 +112,9 @@ class ForegroundService : Service() {
                 PendingIntent.getActivity(
                     this@ForegroundService,
                     0,
-                    Intent(this@ForegroundService, MainActivity::class.java),
+                    Intent(this@ForegroundService, MainActivity::class.java).apply {
+                        addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                    },
                     PendingIntent.FLAG_IMMUTABLE
                 ),
                 NOTIFICATION_ID_REMIND_TASK
@@ -135,7 +137,9 @@ class ForegroundService : Service() {
                 PendingIntent.getActivity(
                     this@ForegroundService,
                     0,
-                    Intent(this@ForegroundService, MainActivity::class.java),
+                    Intent(this@ForegroundService, MainActivity::class.java).apply {
+                        addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                    },
                     PendingIntent.FLAG_IMMUTABLE
                 ),
                 NOTIFICATION_ID_REMIND_CREATE_PLAN_TODAY
@@ -207,7 +211,9 @@ class ForegroundService : Service() {
                     PendingIntent.getActivity(
                         this@ForegroundService,
                         0,
-                        Intent(this@ForegroundService, MainActivity::class.java),
+                        Intent(this@ForegroundService, MainActivity::class.java).apply {
+                            addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                        },
                         PendingIntent.FLAG_IMMUTABLE
                     ),
                     NOTIFICATION_ID_UPDATE_STATUS_TASK

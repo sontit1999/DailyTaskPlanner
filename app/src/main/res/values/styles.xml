@@ -16,4 +16,8 @@
         <item name="android:text">Ad</item>
         <item name="android:background">@drawable/bg_ad_choice</item>
     </style>
+
+    <style name="circle">
+        <item name="cornerSize">50%</item>
+    </style>
 </resources>

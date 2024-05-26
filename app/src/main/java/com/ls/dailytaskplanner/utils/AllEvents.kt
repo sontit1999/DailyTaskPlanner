@@ -11,6 +11,11 @@ object AllEvents {
     const val E1_ADS_REWARD_USER_EARN_SUCCESS = "e1_ads_reward_user_earn_success"
 
     // inter
+    const val INTER_SPLASH_LOAD_SUCCESS = "inter_splash_load_success"
+    const val INTER_SPLASH_LOAD_FAIL = "inter_splash_load_fail"
+    const val INTER_SPLASH_SHOW_SUCCESS = "inter_splash_show_success"
+    const val INTER_SPLASH_SHOW_FAIL = "inter_splash_show_fail"
+    const val INTER_SPLASH_SHOW_FAIL_NO_ADS = "inter_splash_show_fail_no_ads"
     const val E1_ADS_INTER_LOAD_SUCCESS = "e1_ads_inter_load_success"
     const val E1_ADS_INTER_LOAD_FAIL = "e1_ads_inter_load_fail"
     const val E1_ADS_INTER_SHOW_SUCCESS = "e1_ads_inter_show_success"
@@ -34,6 +39,10 @@ object AllEvents {
     const val E1_ADS_NATIVE_ADD_TASK_CLICK = "e1_ads_native_add_task_click"
     const val E1_ADS_NATIVE_ADD_TASK_LOAD_SUCCESS = "e1_ads_native_add_task_load_success"
     const val E1_ADS_NATIVE_ADD_TASK_LOAD_FAIL = "e1_ads_native_add_task_load_fail"
+    const val NATIVE_AGE_CLICK = "native_age_click"
+    const val NATIVE_AGE_LOAD_SUCCESS = "native_age_load_success"
+    const val NATIVE_AGE_IMPRESSION = "native_age_impression"
+    const val NATIVE_AGE_LOAD_FAIL = "native_age_load_fail"
 
     // banner
     const val E1_ADS_BANNER_LOAD_SUCCESS = "e1_ads_banner_load_success"
