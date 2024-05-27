@@ -37,7 +37,7 @@ class NotificationWorker(private val appContext: Context, workerParams: WorkerPa
         if (localStorage.enableNotifyApp) {
             TrackingHelper.logEvent(AllEvents.NOTIFY_DAILY + "receive")
             NotificationUtils.showNotification(
-                appContext.getString(R.string.app_name),
+                appContext.getString(R.string.title_notify_daily),
                 appContext.getString(R.string.message_notify_daily_task_remind),
                 PendingIntent.getActivity(
                     appContext,

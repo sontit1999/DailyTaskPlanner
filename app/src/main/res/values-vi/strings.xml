@@ -1,0 +1,44 @@
+<resources>
+    <string name="com.crashlytics.android.build_id" translatable="false">1</string>
+    <string name="app_name">Daily Plan</string>
+    <string name="title_home">Trang chủ</string>
+    <string name="title_profile">Cá nhân</string>
+    <string name="titlte_task">Họp hàng ngày</string>
+    <string name="create">Tạo</string>
+    <string name="new_task">Công việc mới .....</string>
+    <string name="today">Hôm nay</string>
+    <string name="time">Thời gian</string>
+    <string name="reminder">Nhắc nhở</string>
+    <string name="desscription">Nhập mô tả ...</string>
+    <string name="update">Cập nhật</string>
+    <string name="task_updated">Cập nhật thành công</string>
+    <string name="task_deleted">Xóa thành công</string>
+    <string name="add_task_success">Thêm công vệc thành công</string>
+    <string name="all_time">Cả ngày</string>
+    <string name="congratulation_done_task">Chúc mừng bạn đã hoàn thành mọi nhiệm vụ. Phát huy nhé</string>
+    <string name="no_task">Không có công việc nào cho ngày đã chọn! Thêm ngay</string>
+    <string name="policy">Quyền riêng tư</string>
+    <string name="notify_app">Thông báo</string>
+    <string name="time_reminder_create_plan">Nhắc nhở kế hoạch lúc  </string>
+    <string name="summary">Tóm tắt</string>
+    <string name="statical">Thống Kê</string>
+    <string name="remind_task">Nhắc nhở công việc trước </string>
+    <string name="setting">Cài đặt</string>
+    <string name="remind_task_start_after"> bắt đầu sau </string>
+    <string name="effective_plan">Lập kế hoạch hiệu quả</string>
+    <string name="effective_plan_des">Hãy dành chút thời gian để lên kế hoạch cho ngày hôm nay!</string>
+    <string name="reminder_sound">Âm thanh thông báo</string>
+    <string name="service_running"> nhắc nhở công việc cho bạn 😜</string>
+    <string name="minutes">phút</string>
+    <string name="congratulation_done_task_to_now">Bạn đã hoàn thành %s nhiệm vụ ngày hôm nay! Cố lên nhé, bạn sắp xong rồi! </string>
+    <string name="congratulation">Xin chức mừng</string>
+    <string name="title_notify_saturday">Hãy sẵn sàng cho một tuần làm việc hiệu quả!</string>
+    <string name="notify_saturday">Nhấn vào đây để đặt mục tiêu và sắp xếp nhiệm vụ của bạn với Daily Plan. 📅✨</string>
+    <string name="title_notify_daily">Sẵn sàng cho ngày mai?</string>
+    <string name="message_notify_daily_task_remind">Nhấn vào đây để đặt nhiệm vụ và mục tiêu của bạn với Daily Plan. 📅✨</string>
+    <string name="loading_ad">Đang tải quảng cáo ...</string>
+    <string name="msg_btn_continue">Tiếp tục</string>
+    <string name="please_enter_title">Vui lòng nhập tên nhiệm vụ</string>
+    <string name="msg_language">Ngôn ngữ</string>
+    <string name="ok">Ok</string>
+</resources>

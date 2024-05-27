@@ -1,16 +1,15 @@
 <resources>
-    <string name="com.crashlytics.android.build_id">1</string>
-    <string name="app_name">DailyTaskPlanner</string>
+    <string name="com.crashlytics.android.build_id" translatable="false">1</string>
+    <string name="app_name">Daily Plan</string>
     <string name="title_home">Home</string>
     <string name="title_profile">Profile</string>
-    <string name="titlte_task">Họp daily hàng ngày</string>
+    <string name="titlte_task">Daily meeting</string>
     <string name="create">Create</string>
     <string name="new_task">New task .....</string>
     <string name="today">Today</string>
     <string name="time">Time</string>
     <string name="reminder">Reminder</string>
-    <string name="no_tag">No tag</string>
-    <string name="desscription">Desscription here ...</string>
+    <string name="desscription">Description here ...</string>
     <string name="update">Update</string>
     <string name="task_updated">Task updated successfully</string>
     <string name="task_deleted">Task deleted successfully</string>
@@ -33,8 +32,10 @@
     <string name="minutes">minutes</string>
     <string name="congratulation_done_task_to_now">You have completed %s missions today! Hang in there, you\'re almost done!" </string>
     <string name="congratulation">Congratulation</string>
-    <string name="notify_saturday">Hãy xem lại công việc của bạn trong tuần qua</string>
-    <string name="message_notify_daily_task_remind">Update status task today and Don\'t forget create a new plan for tomorrow!</string>
+    <string name="title_notify_saturday">Get ready for a productive week!</string>
+    <string name="notify_saturday">Tap here to set your goals and organize your tasks with Daily Plan. 📅✨</string>
+    <string name="title_notify_daily">Ready for Tomorrow?</string>
+    <string name="message_notify_daily_task_remind">Tap here to set your tasks and goals with Daily Plan. 📅✨</string>
     <string name="loading_ad">Loading ad ...</string>
     <string name="msg_btn_continue">Continue</string>
     <string name="please_enter_title">Please enter the name of the task</string>

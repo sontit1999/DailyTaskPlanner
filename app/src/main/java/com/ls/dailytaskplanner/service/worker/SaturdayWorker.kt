@@ -40,7 +40,7 @@ class SaturdayWorker(private val appContext: Context, workerParams: WorkerParame
         if (localStorage.enableNotifyApp) {
             TrackingHelper.logEvent(AllEvents.NOTIFY_SATURDAY + "receive")
             NotificationUtils.showNotification(
-                appContext.getString(R.string.app_name),
+                appContext.getString(R.string.title_notify_saturday),
                 appContext.getString(R.string.notify_saturday),
                 PendingIntent.getActivity(
                     appContext,

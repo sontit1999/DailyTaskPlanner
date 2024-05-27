@@ -1,0 +1,44 @@
+<resources>
+    <string name="com.crashlytics.android.build_id" translatable="false">1</string>
+    <string name="app_name">Daily Plan</string>
+    <string name="title_home">Início</string>
+    <string name="title_profile">Perfil</string>
+    <string name="titlte_task">Reunião diária</string>
+    <string name="create">Criar</string>
+    <string name="new_task">Nova tarefa ...</string>
+    <string name="today">Hoje</string>
+    <string name="time">Hora</string>
+    <string name="reminder">Lembrete</string>
+    <string name="desscription">Descrição aqui ...</string>
+    <string name="update">Atualizar</string>
+    <string name="task_updated">Tarefa atualizada com sucesso</string>
+    <string name="task_deleted">Tarefa excluída com sucesso</string>
+    <string name="add_task_success">Tarefa adicionada com sucesso</string>
+    <string name="all_time">Todo o tempo</string>
+    <string name="congratulation_done_task">Parabéns por completar todas as tarefas. Continue assim!</string>
+    <string name="no_task">Nenhuma tarefa para a data selecionada! Adicione agora</string>
+    <string name="policy">Política de Privacidade</string>
+    <string name="notify_app">Notificação</string>
+    <string name="time_reminder_create_plan">Lembrar novo plano às </string>
+    <string name="summary">Resumo</string>
+    <string name="statical">Estatísticas</string>
+    <string name="remind_task">Lembrar tarefa antes de </string>
+    <string name="setting">Configuração</string>
+    <string name="remind_task_start_after"> começará em </string>
+    <string name="effective_plan">Planejamento eficaz</string>
+    <string name="effective_plan_des">Tire um tempo para planejar hoje!</string>
+    <string name="reminder_sound">Habilitar som de notificação</string>
+    <string name="service_running"> lembrará as tarefas para você 😜</string>
+    <string name="minutes">minutos</string>
+    <string name="congratulation_done_task_to_now">Você completou %s missões hoje! Continue firme, você está quase terminando!" </string>
+    <string name="congratulation">Parabéns</string>
+    <string name="title_notify_saturday">Prepare-se para uma semana produtiva!</string>
+    <string name="notify_saturday">Toque aqui para definir suas metas e organizar suas tarefas com o Daily Plan. 📅✨</string>
+    <string name="title_notify_daily">Pronto para amanhã?</string>
+    <string name="message_notify_daily_task_remind">Toque aqui para definir suas tarefas e metas com o Daily Plan. 📅✨</string>
+    <string name="loading_ad">Carregando anúncio ...</string>
+    <string name="msg_btn_continue">Continuar</string>
+    <string name="please_enter_title">Por favor, insira o nome da tarefa</string>
+    <string name="msg_language">Idioma</string>
+    <string name="ok">Ok</string>
+</resources>
