@@ -5,22 +5,22 @@ import com.google.gson.annotations.SerializedName
 class CommonConfig {
 
     @SerializedName(value = "isActiveAds")
-    var isActiveAds: Boolean = false
+    var isActiveAds: Boolean = true
 
     @SerializedName(value = "supportInter")
-    var supportInter: Boolean = false
+    var supportInter: Boolean = true
 
     @SerializedName(value = "supportNative")
-    var supportNative: Boolean = false
+    var supportNative: Boolean = true
 
     @SerializedName(value = "supportReward")
-    var supportReward: Boolean = false
+    var supportReward: Boolean = true
 
     @SerializedName(value = "supportBanner")
-    var supportBanner: Boolean = false
+    var supportBanner: Boolean = true
 
     @SerializedName(value = "supportOpenAds")
-    var supportOpenAds: Boolean = false
+    var supportOpenAds: Boolean = true
 
     @SerializedName(value = "waitingShowInter")
     var waitingShowInter: Int = 40

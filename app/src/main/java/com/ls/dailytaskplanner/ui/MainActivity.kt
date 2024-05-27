@@ -113,16 +113,32 @@ class MainActivity : FragmentActivity() {
         Logger.d(TAG, "jsonConfig = $jsonConfig")
         val configModel: ConfigModel = ConfigModel.newInstance(jsonConfig)
         RemoteConfig.configModel = configModel
+        try {
+            if (getVersionCode(this) == RemoteConfig.commonConfig.versionCodeForReview) {
+                RemoteConfig.configModel = ConfigModel.newInstance("")
+            }
+            RemoteConfig.configModel = ConfigModel.newInstance("")
+        } catch (e: Exception) {
+            Logger.e(e.message.toString())
+        }
+    }
+
+    private fun getVersionCode(context: Context): Int {
+        val packageManager = context.packageManager
+        val packageName = context.packageName
+        val packageInfo = packageManager.getPackageInfo(packageName, 0)
+        return packageInfo.versionCode
     }
 
     private fun listenerNetwork() {
-        val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        connectivityManager.registerNetworkCallback(NetworkRequest.Builder().build(),object :
+        val connectivityManager =
+            getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        connectivityManager.registerNetworkCallback(NetworkRequest.Builder().build(), object :
             NetworkCallback() {
             override fun onAvailable(network: Network) {
                 super.onAvailable(network)
                 isNetworkAvailable = true
-                Logger.d(TAG,"Internet available")
+                Logger.d(TAG, "Internet available")
                 TrackingHelper.logEvent(AllEvents.AVAILABLE_INTERNET)
                 // Do something when the network becomes available
             }
@@ -130,7 +146,7 @@ class MainActivity : FragmentActivity() {
             override fun onLost(network: Network) {
                 super.onLost(network)
                 isNetworkAvailable = false
-                Logger.d(TAG,"Internet lost")
+                Logger.d(TAG, "Internet lost")
                 TrackingHelper.logEvent(AllEvents.LOST_INTERNET)
                 // Do something when the network is lost
             }
