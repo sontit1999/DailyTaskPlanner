@@ -37,4 +37,6 @@ interface LocalStorage {
     var didChooseLanguage: Boolean
 
     var openCount : Int
+
+    var timeCheckStatusTask : Int
 }

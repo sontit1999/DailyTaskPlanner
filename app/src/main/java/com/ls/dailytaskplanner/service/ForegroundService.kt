@@ -11,7 +11,6 @@ import android.content.IntentFilter
 import android.media.MediaPlayer
 import android.os.Build
 import android.os.IBinder
-import android.widget.RemoteViews
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import com.ls.dailytaskplanner.R
@@ -28,11 +27,11 @@ import com.ls.dailytaskplanner.utils.NotificationUtils
 import com.ls.dailytaskplanner.utils.NotificationUtils.NOTIFICATION_ID_REMIND_CREATE_PLAN_TODAY
 import com.ls.dailytaskplanner.utils.NotificationUtils.NOTIFICATION_ID_REMIND_TASK
 import com.ls.dailytaskplanner.utils.NotificationUtils.NOTIFICATION_ID_SERVICE
-import com.ls.dailytaskplanner.utils.NotificationUtils.NOTIFICATION_ID_UPDATE_STATUS_TASK
 import com.ls.dailytaskplanner.utils.TrackingHelper
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
@@ -58,6 +57,11 @@ class ForegroundService : Service() {
 
     private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
+    private var numberTaskDone = 0
+    private var totalTask = 0
+
+    private var jobCheckStatusTask: Job? = null
+
     private val broadcastReceiver = object : BroadcastReceiver() {
 
         @RequiresApi(Build.VERSION_CODES.O)
@@ -75,8 +79,9 @@ class ForegroundService : Service() {
 
                 Intent.ACTION_USER_PRESENT -> {
                     isUserPresent = true
-                    serviceScope.launch(Dispatchers.IO) {
-                        delay(TIME_USER_ACTIVE_10_MINUTES)
+                    jobCheckStatusTask?.cancel()
+                    jobCheckStatusTask = serviceScope.launch(Dispatchers.IO) {
+                        delay(localStorage.timeCheckStatusTask * 1000L)
                         handleUserActive()
                     }
                     Logger.d(TAG, "----> Screen unlock")
@@ -105,7 +110,7 @@ class ForegroundService : Service() {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun showNotifyRemindTask(it: Task) = CoroutineScope(Dispatchers.IO).launch{
+    private fun showNotifyRemindTask(it: Task) = CoroutineScope(Dispatchers.IO).launch {
         val timeRemaining = it.timeStart.calculateTimeRemaining()
         if (timeRemaining in 1..localStorage.remindTaskBefore.toInt() && !it.didReminder) {
             it.didReminder = true
@@ -122,8 +127,10 @@ class ForegroundService : Service() {
                     0,
                     Intent(this@ForegroundService, MainActivity::class.java).apply {
                         addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                        putExtra(Constants.IntentKey.TYPE_NOTIFY,
-                            NOTIFICATION_ID_REMIND_TASK)
+                        putExtra(
+                            Constants.IntentKey.TYPE_NOTIFY,
+                            NOTIFICATION_ID_REMIND_TASK
+                        )
                     },
                     PendingIntent.FLAG_IMMUTABLE
                 ),
@@ -150,8 +157,10 @@ class ForegroundService : Service() {
                     0,
                     Intent(this@ForegroundService, MainActivity::class.java).apply {
                         addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                        putExtra(Constants.IntentKey.TYPE_NOTIFY,
-                            NOTIFICATION_ID_REMIND_CREATE_PLAN_TODAY)
+                        putExtra(
+                            Constants.IntentKey.TYPE_NOTIFY,
+                            NOTIFICATION_ID_REMIND_CREATE_PLAN_TODAY
+                        )
                     },
                     PendingIntent.FLAG_IMMUTABLE
                 ),
@@ -180,7 +189,6 @@ class ForegroundService : Service() {
         Logger.d(TAG, "Service onStartCommand ")
         // Create a notification channel for Android 8.0 and above
         NotificationUtils.createNotificationChannel()
-
         // Build the notification
         val notification = buildNotification()
 
@@ -188,7 +196,6 @@ class ForegroundService : Service() {
         startForeground(NOTIFICATION_ID_SERVICE, notification)
 
         registerEventUser()
-
         scheduleCheckTask()
         // Keep the service alive
         return START_STICKY
@@ -212,34 +219,13 @@ class ForegroundService : Service() {
 
     private fun handleUserActive() {
         serviceScope.launch(Dispatchers.IO) {
-            val lastTimeNotify = localStorage.lastTimeNotifyUpdateStatusTask
-            if ((isUserPresent && System.currentTimeMillis() - lastTimeNotify > 4 * 60 * 60 * 1000) || lastTimeNotify == 0L) { // 4h
-                Logger.d(TAG, "----> User active 10 minutes")
-                localStorage.lastTimeNotifyUpdateStatusTask = System.currentTimeMillis()
-                val listTask = taskRepository.getTasksByDate(AppUtils.getCurrentDate())
-                val totalTask = listTask.size
-                val numTaskDone = listTask.count { it.isCompleted }
-                TrackingHelper.logEvent(AllEvents.NOTIFY_UPDATE_STATUS_TASK + "receive")
-                NotificationUtils.showNotifyNormal(
-                    this@ForegroundService,
-                    getString(R.string.congratulation),
-                    getString(R.string.congratulation_done_task_to_now, "$numTaskDone/$totalTask"),
-                    PendingIntent.getActivity(
-                        this@ForegroundService,
-                        0,
-                        Intent(this@ForegroundService, MainActivity::class.java).apply {
-                            addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                            putExtra(Constants.IntentKey.TYPE_NOTIFY,
-                                NOTIFICATION_ID_UPDATE_STATUS_TASK)
-                        },
-                        PendingIntent.FLAG_IMMUTABLE
-                    ),
-                    NOTIFICATION_ID_UPDATE_STATUS_TASK
-                )
-            }
-
+            val listTask = taskRepository.getTasksByDate(AppUtils.getCurrentDate())
+            val totalTask = listTask.size
+            val numTaskDone = listTask.count { it.isCompleted }
+            this@ForegroundService.numberTaskDone = numTaskDone
+            this@ForegroundService.totalTask = totalTask
+            updateNotifyForegroundService()
         }
-
     }
 
     private fun registerEventUser() {
@@ -268,25 +254,26 @@ class ForegroundService : Service() {
         return null
     }
 
+    @SuppressLint("ForegroundServiceType")
+    fun updateNotifyForegroundService() {
+        startForeground(NOTIFICATION_ID_SERVICE, buildNotification())
+    }
+
     @SuppressLint("RemoteViewLayout")
     private fun buildNotification(): Notification {
-        val notificationLayout = RemoteViews(packageName, R.layout.custom_notification_layout)
-        notificationLayout.setTextViewText(
-            R.id.notification_body,
-            getString(R.string.service_running)
-        )
+        val message =
+            getString(R.string.congratulation_done_task_to_now, "$numberTaskDone/$totalTask")
         val intent = Intent(this, MainActivity::class.java)
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK and Intent.FLAG_ACTIVITY_NEW_TASK)
         val pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
 
         return NotificationCompat.Builder(this, NotificationUtils.CHANNEL_ID)
             .setContentTitle(getString(R.string.app_name))
-            .setContentText(getString(R.string.service_running))
+            .setContentText(message)
             .setSmallIcon(R.drawable.icon_task)
             .setAutoCancel(false)
             .setOngoing(true)
             .setContentIntent(pendingIntent)
-            .setCustomContentView(notificationLayout)
             .build()
     }
 

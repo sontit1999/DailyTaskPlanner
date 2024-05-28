@@ -31,7 +31,6 @@ object AllEvents {
     const val BANNER_LOAD_SUCCESS = "banner_load_success_"
     const val BANNER_LOAD_FAIL = "banner_load_fail_"
     const val BANNER_CLICK = "banner_click_"
-    
 
 
     // open ads
@@ -99,4 +98,9 @@ object AllEvents {
     const val TASK_CREATE = "task_create"
     const val TASK_UPDATE = "task_update"
     const val TASK_REMOVE = "task_remove"
+
+    // PERMISSION NOTIFY
+    const val ACCEPT_PERMISSION_NOTIFY = "accept_permission_notify"
+    const val DECLINE_PERMISSION_NOTIFY = "decline_permission_notify"
+    const val OPEN_SETTING_NOTIFY = "open_setting_notify"
 }

@@ -1,10 +1,13 @@
 package com.ls.dailytaskplanner.utils
 
+import android.Manifest
 import android.app.ActivityManager
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.ls.dailytaskplanner.App
 import com.ls.dailytaskplanner.service.ForegroundService
@@ -101,6 +104,31 @@ object AppUtils {
 
     fun readFileTextFromAssets(context: Context, fileName: String): String {
         return context.assets.open(fileName).bufferedReader().use { it.readText() }
+    }
+
+
+    private val notifyPermission = arrayOf(
+        Manifest.permission.POST_NOTIFICATIONS
+    )
+
+    fun hasPostNotifyPermissions(context: Context) : Boolean {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU){
+            return true
+        }
+        return hasPermissions(context, notifyPermission)
+    }
+
+    fun hasPermissions(context: Context, permissions: Array<String>): Boolean {
+        for (permission in permissions) {
+            if (ContextCompat.checkSelfPermission(
+                    context,
+                    permission
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                return false
+            }
+        }
+        return true
     }
 
 }

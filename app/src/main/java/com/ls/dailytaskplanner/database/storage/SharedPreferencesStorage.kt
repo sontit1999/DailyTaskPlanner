@@ -121,5 +121,10 @@ class SharedPreferencesStorage @Inject constructor(
         set(value) {
             putData(Constants.SharedPrefKey.KEY_OPEN_COUNT, value)
         }
+    override var timeCheckStatusTask: Int
+        get() = getData(Constants.SharedPrefKey.KEY_TIME_CHECK_STATUS_TASK, Int::class) ?: 30
+        set(value) {
+            putData(Constants.SharedPrefKey.KEY_TIME_CHECK_STATUS_TASK, value)
+        }
 
 }

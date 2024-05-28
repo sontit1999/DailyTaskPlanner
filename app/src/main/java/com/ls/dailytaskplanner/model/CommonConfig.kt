@@ -31,6 +31,9 @@ class CommonConfig {
     @SerializedName(value = "packageName")
     var packageName: String = ""
 
+    @SerializedName(value = "timeCheckTask")
+    var timeCheckTask: Int = 600
+
     @SerializedName(value = "versionCodeForReview")
     var versionCodeForReview: Int = 0
 

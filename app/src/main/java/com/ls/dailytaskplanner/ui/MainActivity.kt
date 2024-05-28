@@ -1,5 +1,6 @@
 package com.ls.dailytaskplanner.ui
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
@@ -8,8 +9,12 @@ import android.net.Network
 import android.net.NetworkRequest
 import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.widget.FrameLayout
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.databinding.DataBindingUtil
@@ -66,6 +71,7 @@ class MainActivity : FragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+        checkPermissionNotifyAndroid13()
         checkIntent(intent)
         getConfigRemote()
         trackingOpenApp()
@@ -77,6 +83,46 @@ class MainActivity : FragmentActivity() {
         setUpBottomNavigation()
         initRvLanguage()
         handleLoadShowOpenAd()
+    }
+
+    private val requestPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) {
+            if (it) {
+                Logger.d(TAG, "Allow permission notify !")
+                TrackingHelper.logEvent(AllEvents.ACCEPT_PERMISSION_NOTIFY)
+            } else {
+                Logger.d(TAG, "Deny permission notify !")
+                TrackingHelper.logEvent(AllEvents.DECLINE_PERMISSION_NOTIFY)
+                showSettingSystem()
+            }
+        }
+
+    private fun checkPermissionNotifyAndroid13() {
+        val isGranted = AppUtils.hasPostNotifyPermissions(this)
+        if (!isGranted) {
+            requestPermissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
+        }
+    }
+
+    //Show System Setting
+    private var confirmNotifyActivityResult: ActivityResultLauncher<Intent> = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result: ActivityResult ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            //  you will get result here in result.data
+            val isGranted = AppUtils.hasPostNotifyPermissions(this)
+            if (!isGranted) {
+                TrackingHelper.logEvent(AllEvents.DECLINE_PERMISSION_NOTIFY)
+            } else TrackingHelper.logEvent(AllEvents.ACCEPT_PERMISSION_NOTIFY)
+        }
+    }
+
+    private fun showSettingSystem() {
+        TrackingHelper.logEvent(AllEvents.OPEN_SETTING_NOTIFY)
+        val settingsIntent: Intent =
+            Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                .putExtra(Settings.EXTRA_APP_PACKAGE, packageName)
+        confirmNotifyActivityResult.launch(settingsIntent)
     }
 
     private fun getConfigRemote() {
@@ -113,11 +159,11 @@ class MainActivity : FragmentActivity() {
         Logger.d(TAG, "jsonConfig = $jsonConfig")
         val configModel: ConfigModel = ConfigModel.newInstance(jsonConfig)
         RemoteConfig.configModel = configModel
+        storage.timeCheckStatusTask = RemoteConfig.commonConfig.timeCheckTask
         try {
             if (getVersionCode(this) == RemoteConfig.commonConfig.versionCodeForReview) {
                 RemoteConfig.configModel = ConfigModel.newInstance("")
             }
-            RemoteConfig.configModel = ConfigModel.newInstance("")
         } catch (e: Exception) {
             Logger.e(e.message.toString())
         }

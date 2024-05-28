@@ -16,6 +16,7 @@ object Constants {
         const val KEY_CAN_SHOW_OPEN_ADS = "can_show_open_ads"
         const val KEY_DID_CHOOSE_LANGUAGE = "did_choose_language"
         const val KEY_OPEN_COUNT = "open_count"
+        const val KEY_TIME_CHECK_STATUS_TASK = "time_check_status_task"
     }
 
     object IntentKey {
