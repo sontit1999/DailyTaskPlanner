@@ -3,7 +3,6 @@ package com.ls.dailytaskplanner.database.storage
 import android.content.Context
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.ls.dailytaskplanner.utils.AES
 import com.ls.dailytaskplanner.utils.Constants
 import com.ls.dailytaskplanner.utils.toHex
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -20,14 +19,14 @@ class SharedPreferencesStorage @Inject constructor(
 
     override fun putString(key: String, value: String?) {
         with(sharedPreferences.edit()) {
-            putString(key, value?.let { AES.enc(it, secret) })
+            putString(key, value)
             apply()
         }
     }
 
     override fun getString(key: String): String? {
         val str = sharedPreferences.getString(key, null) ?: return null
-        return AES.dec(str, secret)
+        return str
     }
 
 
