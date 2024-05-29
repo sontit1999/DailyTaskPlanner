@@ -17,7 +17,9 @@ import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.appopen.AppOpenAd
 import com.ls.dailytaskplanner.App
 import com.ls.dailytaskplanner.model.eventbus.OpenAdEvent
+import com.ls.dailytaskplanner.ui.MainActivity
 import com.ls.dailytaskplanner.utils.AllEvents
+import com.ls.dailytaskplanner.utils.AppUtils
 import com.ls.dailytaskplanner.utils.Logger
 import com.ls.dailytaskplanner.utils.RemoteConfig
 import com.ls.dailytaskplanner.utils.TrackingHelper
@@ -44,7 +46,7 @@ object AppOpenAdManager : Application.ActivityLifecycleCallbacks, LifecycleObser
     /** Request an ad. */
     fun loadAd(context: Context) {
 
-        if (!RemoteConfig.commonConfig.supportOpenAds || !RemoteConfig.commonConfig.isActiveAds) return
+        if (!RemoteConfig.commonConfig.supportOpenAds || !RemoteConfig.commonConfig.isActiveAds || !AppUtils.canRequestAd ) return
 
         // Do not load ad if there is an unused ad or one is already loading.
         if (isLoadingAd || isAdAvailable()) {
@@ -150,6 +152,12 @@ object AppOpenAdManager : Application.ActivityLifecycleCallbacks, LifecycleObser
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     fun onStart() {
+        if (MainActivity.isOpenSettingSystem) {
+            MainActivity.isOpenSettingSystem = false
+            if (AppUtils.hasPostNotifyPermissions(App.mInstance)) {
+                AppUtils.startTaskService()
+            }
+        }
         Handler(Looper.getMainLooper()).postDelayed({
             currentActivity?.get()?.let { showAdIfAvailable(it) }
         }, 500)

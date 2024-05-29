@@ -24,6 +24,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.ads.AdError
 import com.google.android.gms.ads.FullScreenContentCallback
+import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.nativead.NativeAdView
 import com.google.android.gms.tasks.Task
 import com.google.firebase.remoteconfig.BuildConfig
@@ -34,6 +35,7 @@ import com.ls.dailytaskplanner.adapter.LanguageAdapter
 import com.ls.dailytaskplanner.adapter.MainPagerAdapter
 import com.ls.dailytaskplanner.ads.AdManager
 import com.ls.dailytaskplanner.ads.AppOpenAdManager
+import com.ls.dailytaskplanner.cmp.GoogleMobileAdsConsentManager
 import com.ls.dailytaskplanner.database.storage.LocalStorage
 import com.ls.dailytaskplanner.databinding.ActivityMainBinding
 import com.ls.dailytaskplanner.model.ConfigModel
@@ -65,30 +67,66 @@ class MainActivity : FragmentActivity() {
     @Inject
     lateinit var storage: LocalStorage
 
+    @Inject
+    lateinit var googleMobileAdsConsentManager: GoogleMobileAdsConsentManager
+
     private lateinit var binding: ActivityMainBinding
     private val viewModel: MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        EventBus.getDefault().register(this)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
-        checkPermissionNotifyAndroid13()
         checkIntent(intent)
+        checkConsent()
+        checkPermissionNotifyAndroid13()
         getConfigRemote()
         trackingOpenApp()
         listenerNetwork()
-        EventBus.getDefault().register(this)
-        AdManager.initialize()
-        AppUtils.startTaskService()
         setUpViewPager()
         setUpBottomNavigation()
         initRvLanguage()
-        handleLoadShowOpenAd()
+    }
+
+    private fun initMobileAd() {
+        MobileAds.initialize(
+            this
+        ) {
+            Logger.d("-----> MobileAds initialized")
+            loadNativeAges()
+            handleLoadShowOpenAd()
+            AdManager.initialize()
+        }
+    }
+
+    private fun loadNativeAges() {
+        if (!storage.didChooseLanguage) {
+            AdManager.loadNativeAge()
+        }
+    }
+
+    private fun checkConsent() {
+        if (googleMobileAdsConsentManager.canRequestAds) {
+            AppUtils.canRequestAd = true
+            initMobileAd()
+            return
+        }
+        googleMobileAdsConsentManager.gatherConsent(this) {
+            AppUtils.canRequestAd = true
+            if (googleMobileAdsConsentManager.canRequestAds) {
+                initMobileAd()
+                return@gatherConsent
+            } else {
+                hiddenSplash()
+            }
+        }
     }
 
     private val requestPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) {
             if (it) {
                 Logger.d(TAG, "Allow permission notify !")
+                AppUtils.startTaskService()
                 TrackingHelper.logEvent(AllEvents.ACCEPT_PERMISSION_NOTIFY)
             } else {
                 Logger.d(TAG, "Deny permission notify !")
@@ -101,6 +139,8 @@ class MainActivity : FragmentActivity() {
         val isGranted = AppUtils.hasPostNotifyPermissions(this)
         if (!isGranted) {
             requestPermissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
+        } else {
+            AppUtils.startTaskService()
         }
     }
 
@@ -113,11 +153,15 @@ class MainActivity : FragmentActivity() {
             val isGranted = AppUtils.hasPostNotifyPermissions(this)
             if (!isGranted) {
                 TrackingHelper.logEvent(AllEvents.DECLINE_PERMISSION_NOTIFY)
-            } else TrackingHelper.logEvent(AllEvents.ACCEPT_PERMISSION_NOTIFY)
+            } else {
+                TrackingHelper.logEvent(AllEvents.ACCEPT_PERMISSION_NOTIFY)
+                AppUtils.startTaskService()
+            }
         }
     }
 
     private fun showSettingSystem() {
+        isOpenSettingSystem = true
         TrackingHelper.logEvent(AllEvents.OPEN_SETTING_NOTIFY)
         val settingsIntent: Intent =
             Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -299,6 +343,7 @@ class MainActivity : FragmentActivity() {
 
     private fun handleLoadShowOpenAd() {
         AdManager.loadOpenAdSplash { openAd ->
+            AdManager.handleLoadInterSplash()
             if (openAd != null) {
                 openAd.fullScreenContentCallback = object : FullScreenContentCallback() {
 
@@ -337,7 +382,6 @@ class MainActivity : FragmentActivity() {
         if (!storage.didChooseLanguage) {
             TrackingHelper.logEvent(AllEvents.VIEW_LANGUAGE)
             binding.layoutLanguage.visible()
-            AdManager.handleLoadInterSplash()
         } else {
             loadBannerAd()
             AdManager.loadAdIfNeed(this)
@@ -406,6 +450,7 @@ class MainActivity : FragmentActivity() {
 
     override fun onResume() {
         super.onResume()
+        Logger.d(TAG, "onResume Main isOpenSettingSystem = $isOpenSettingSystem")
         NotificationUtils.cancelReminderNotification(this)
     }
 
@@ -419,6 +464,7 @@ class MainActivity : FragmentActivity() {
 
     companion object {
         private const val TAG = "MainActivity"
+        var isOpenSettingSystem = false
         var isNetworkAvailable = false
     }
 }

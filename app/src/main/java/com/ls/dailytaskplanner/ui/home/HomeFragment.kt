@@ -168,6 +168,7 @@ class HomeFragment : BaseFragment<FragHomeBinding, HomeViewModel>() {
         binding.btnAdd.setSafeOnClickListener {
             AddTaskDialog.newInstance(null,selectedDateString).show(childFragmentManager, AddTaskDialog.TAG)
             TrackingHelper.logEvent(AllEvents.ACTION_ADD_TASK)
+            AppUtils.startTaskService()
         }
 
         binding.tvToday.setSafeOnClickListener {

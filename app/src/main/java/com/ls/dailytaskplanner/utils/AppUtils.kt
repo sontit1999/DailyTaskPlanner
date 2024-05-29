@@ -5,6 +5,7 @@ import android.app.ActivityManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
@@ -22,6 +23,8 @@ import kotlin.math.floor
 
 object AppUtils {
 
+    var canRequestAd = false
+
     fun randomColor(): String {
         val chars = "0123456789ABCDEF"
         var color = "#"
@@ -37,12 +40,19 @@ object AppUtils {
             Logger.d("---> Foreground service is running")
         } else {
             // Foreground service is not running
-            App.mInstance.startService(
-                Intent(
-                    App.mInstance.applicationContext,
-                    ForegroundService::class.java
+            val intent = Intent(App.mInstance.applicationContext, ForegroundService::class.java)
+            intent.putExtra("foregroundServiceType",FOREGROUND_SERVICE_TYPE_SPECIAL_USE)
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                App.mInstance.startForegroundService(
+                    Intent(
+                        App.mInstance.applicationContext,
+                        ForegroundService::class.java
+                    )
                 )
-            )
+            } else {
+                App.mInstance.applicationContext.startService(intent)
+            }
         }
     }
 

@@ -30,6 +30,7 @@ import com.ls.dailytaskplanner.R
 import com.ls.dailytaskplanner.model.eventbus.InterAdEvent
 import com.ls.dailytaskplanner.utils.AllEvents
 import com.ls.dailytaskplanner.utils.AppConfig
+import com.ls.dailytaskplanner.utils.AppUtils
 import com.ls.dailytaskplanner.utils.Logger
 import com.ls.dailytaskplanner.utils.RemoteConfig
 import com.ls.dailytaskplanner.utils.TrackingHelper
@@ -62,9 +63,9 @@ object AdManager {
         autoRefresh: Boolean = false,
         nameScreen : String
     ): AdView? {
-        if (!RemoteConfig.commonConfig.isActiveAds || !RemoteConfig.commonConfig.supportBanner) {
+        if (!RemoteConfig.commonConfig.isActiveAds || !RemoteConfig.commonConfig.supportBanner || !AppUtils.canRequestAd) {
             view.gone()
-            null
+            return null
         }
         try {
             val adView = AdView(view.context)
@@ -116,7 +117,7 @@ object AdManager {
     }
 
     fun loadNativeAddTask() {
-        if (!RemoteConfig.commonConfig.isActiveAds || !RemoteConfig.commonConfig.supportNative || nativeAddTaskLiveData.value != null || isDoingLoadNativeAddTask) return
+        if (!RemoteConfig.commonConfig.isActiveAds || !RemoteConfig.commonConfig.supportNative || nativeAddTaskLiveData.value != null || isDoingLoadNativeAddTask || !AppUtils.canRequestAd) return
 
         val builder: AdLoader.Builder = AdLoader.Builder(
             App.mInstance, RemoteConfig.commonConfig.nativeListAdKey
@@ -161,7 +162,7 @@ object AdManager {
     }
 
     fun loadNativeAge() {
-        if (!RemoteConfig.commonConfig.isActiveAds || !RemoteConfig.commonConfig.supportNative || nativeAgeLiveData.value != null ) return
+        if (!RemoteConfig.commonConfig.isActiveAds || !RemoteConfig.commonConfig.supportNative || nativeAgeLiveData.value != null || !AppUtils.canRequestAd ) return
 
         val builder: AdLoader.Builder = AdLoader.Builder(
             App.mInstance, RemoteConfig.commonConfig.nativeAgeKey
@@ -226,6 +227,10 @@ object AdManager {
     }
 
     fun loadOpenAdSplash(onLoadFinish: (AppOpenAd?) -> Unit) {
+        if (!AppUtils.canRequestAd) {
+            onLoadFinish.invoke(null)
+            return
+        }
         val request = AdRequest.Builder().build()
         AppOpenAd.load(
             App.mInstance, RemoteConfig.commonConfig.openAdSplashKey, request,
@@ -249,7 +254,7 @@ object AdManager {
     }
 
     fun handleLoadInterSplash() {
-        if (!RemoteConfig.commonConfig.supportInter || !RemoteConfig.commonConfig.isActiveAds) return
+        if (!RemoteConfig.commonConfig.supportInter || !RemoteConfig.commonConfig.isActiveAds || !AppUtils.canRequestAd ) return
         InterstitialAd.load(
             App.mInstance,
             RemoteConfig.commonConfig.interSplashAdKey,
@@ -310,7 +315,7 @@ object AdManager {
     private fun isInterAvailable() = interstitialAd != null
 
     private fun handleLoadInter() {
-        if (!RemoteConfig.commonConfig.supportInter || !RemoteConfig.commonConfig.isActiveAds) return
+        if (!RemoteConfig.commonConfig.supportInter || !RemoteConfig.commonConfig.isActiveAds || !AppUtils.canRequestAd ) return
         if (isInterAvailable()) return
         if (isDoingLoadInter) return
 
