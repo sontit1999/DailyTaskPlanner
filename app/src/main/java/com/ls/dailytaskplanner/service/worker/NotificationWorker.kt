@@ -33,23 +33,21 @@ class NotificationWorker(private val appContext: Context, workerParams: WorkerPa
 
     @RequiresApi(Build.VERSION_CODES.O)
     override suspend fun doWork(): Result {
-        // Code to show notification goes here
-        if (localStorage.enableNotifyApp) {
-            TrackingHelper.logEvent(AllEvents.NOTIFY_DAILY + "receive")
-            NotificationUtils.showNotification(
-                appContext.getString(R.string.title_notify_daily),
-                appContext.getString(R.string.message_notify_daily_task_remind),
-                PendingIntent.getActivity(
-                    appContext,
-                    0,
-                    Intent(appContext, MainActivity::class.java).apply {
-                        addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                        putExtra(Constants.IntentKey.TYPE_NOTIFY,NotificationUtils.NOTIFY_DAILY_OFFLINE)
-                    },
-                    PendingIntent.FLAG_IMMUTABLE
-                )
-            )
-        }
+        TrackingHelper.logEvent(AllEvents.NOTIFY_DAILY + "receive")
+        NotificationUtils.showNotification(
+            appContext.getString(R.string.title_notify_daily),
+            appContext.getString(R.string.message_notify_daily_task_remind),
+            PendingIntent.getActivity(
+                appContext,
+                0,
+                Intent(appContext, MainActivity::class.java).apply {
+                    addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                    putExtra(Constants.IntentKey.TYPE_NOTIFY,NotificationUtils.NOTIFY_DAILY_OFFLINE)
+                },
+                PendingIntent.FLAG_IMMUTABLE
+            ),
+            NotificationUtils.NOTIFY_DAILY_OFFLINE
+        )
         scheduleNext()
         return Result.success()
     }
@@ -79,7 +77,7 @@ class NotificationWorker(private val appContext: Context, workerParams: WorkerPa
         fun getNextTimeNotify(): Long {
             val now = LocalDateTime.now()
             val ninePM = LocalTime.of(21, 0)
-            val nextNotifyTime = if (now.toLocalTime().isAfter(ninePM)) {
+            val nextNotifyTime = if (now.toLocalTime().plusHours(1).isAfter(ninePM)) {
                 LocalDateTime.of(now.plusDays(1).toLocalDate(), ninePM)
             } else {
                 LocalDateTime.of(now.toLocalDate(), ninePM)
