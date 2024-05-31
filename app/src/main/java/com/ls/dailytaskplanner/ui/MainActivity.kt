@@ -206,7 +206,7 @@ class MainActivity : FragmentActivity() {
         storage.timeCheckStatusTask = RemoteConfig.commonConfig.timeCheckTask
         try {
             if (getVersionCode(this) == RemoteConfig.commonConfig.versionCodeForReview) {
-                RemoteConfig.configModel = ConfigModel.newInstance("")
+                RemoteConfig.commonConfig.resetAd()
             }
         } catch (e: Exception) {
             Logger.e(e.message.toString())

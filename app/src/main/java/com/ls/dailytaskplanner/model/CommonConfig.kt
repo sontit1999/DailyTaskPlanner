@@ -61,4 +61,13 @@ class CommonConfig {
     @SerializedName(value = "rewardAdKey")
     var rewardAdKey: String = "ca-app-pub-4945756407745123/5044685688"
 
+    fun resetAd(){
+        isActiveAds = false
+        supportInter = false
+        supportNative = false
+        supportReward = false
+        supportBanner = false
+        supportOpenAds = false
+    }
+
 }

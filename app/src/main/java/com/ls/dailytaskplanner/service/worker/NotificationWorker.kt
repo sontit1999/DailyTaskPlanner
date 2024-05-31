@@ -19,9 +19,7 @@ import com.ls.dailytaskplanner.utils.Constants
 import com.ls.dailytaskplanner.utils.Logger
 import com.ls.dailytaskplanner.utils.NotificationUtils
 import com.ls.dailytaskplanner.utils.TrackingHelper
-import java.time.Duration
 import java.time.LocalDateTime
-import java.time.LocalTime
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -42,7 +40,10 @@ class NotificationWorker(private val appContext: Context, workerParams: WorkerPa
                 0,
                 Intent(appContext, MainActivity::class.java).apply {
                     addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                    putExtra(Constants.IntentKey.TYPE_NOTIFY,NotificationUtils.NOTIFY_DAILY_OFFLINE)
+                    putExtra(
+                        Constants.IntentKey.TYPE_NOTIFY,
+                        NotificationUtils.NOTIFY_DAILY_OFFLINE
+                    )
                 },
                 PendingIntent.FLAG_IMMUTABLE
             ),
@@ -54,17 +55,17 @@ class NotificationWorker(private val appContext: Context, workerParams: WorkerPa
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun scheduleNext() {
-        val nextTimeNotify = getNextTimeNotify()
+
         val notificationWork =
             OneTimeWorkRequestBuilder<NotificationWorker>()
-                .setInitialDelay(nextTimeNotify, TimeUnit.SECONDS)
+                .setInitialDelay(ONE_DAY, TimeUnit.HOURS)
                 .setConstraints(
                     Constraints.Builder()
                         .setRequiredNetworkType(NetworkType.CONNECTED)
                         .build()
                 )
                 .addTag(TAG)
-                .addTag(nextTimeNotify.toString())
+                .addTag(LocalDateTime.now().toString())
                 .build()
 
         WorkManager.getInstance(appContext).enqueue(notificationWork)
@@ -72,41 +73,20 @@ class NotificationWorker(private val appContext: Context, workerParams: WorkerPa
 
     companion object {
         const val TAG = "NotificationWorker"
-
-        @RequiresApi(Build.VERSION_CODES.O)
-        fun getNextTimeNotify(): Long {
-            val now = LocalDateTime.now()
-            val ninePM = LocalTime.of(21, 0)
-            val nextNotifyTime = if (now.toLocalTime().plusHours(1).isAfter(ninePM)) {
-                LocalDateTime.of(now.plusDays(1).toLocalDate(), ninePM)
-            } else {
-                LocalDateTime.of(now.toLocalDate(), ninePM)
-            }
-            Logger.d(
-                TAG,
-                "Next notification time: $nextNotifyTime, time delay in seconds: ${
-                    Duration.between(
-                        now,
-                        nextNotifyTime
-                    ).seconds
-                }"
-            )
-            return Duration.between(now, nextNotifyTime).seconds
-        }
+        const val ONE_DAY = 24L
 
         @RequiresApi(Build.VERSION_CODES.O)
         fun scheduleNotification(context: Context) {
-            val nextTime = getNextTimeNotify()
             val notificationWork =
                 OneTimeWorkRequestBuilder<NotificationWorker>() // Flex interval is set to 15 minutes
-                    .setInitialDelay(nextTime, TimeUnit.SECONDS)
+                    .setInitialDelay(ONE_DAY, TimeUnit.HOURS)
                     .setConstraints(
                         Constraints.Builder()
                             .setRequiredNetworkType(NetworkType.CONNECTED) // Change to NetworkType.UNMETERED for unmetered network
                             .build()
                     )
                     .addTag(TAG)
-                    .addTag(nextTime.toString())
+                    .addTag(LocalDateTime.now().toString())
                     .build()
 
             WorkManager.getInstance(context).enqueue(notificationWork)
