@@ -94,7 +94,8 @@ class MainActivity : FragmentActivity() {
         ) {
             Logger.d("-----> MobileAds initialized")
             loadNativeAges()
-            handleLoadShowOpenAd()
+            //handleLoadShowOpenAd()
+            hiddenSplash()
             AdManager.initialize()
         }
     }
