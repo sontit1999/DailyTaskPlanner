@@ -6,8 +6,12 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE
+import android.graphics.Color
+import android.graphics.LinearGradient
+import android.graphics.Shader
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.ls.dailytaskplanner.App
@@ -32,6 +36,20 @@ object AppUtils {
             color += chars[floor(Math.random() * 16).toInt()]
         }
         return color
+    }
+
+    fun setColorTextDefault(textView: AppCompatTextView) {
+        val width = textView.paint.measureText(textView.text.toString())
+        val textShader = LinearGradient(
+            width, 0f, textView.textSize, 0f,
+            intArrayOf(
+                Color.parseColor("#00000"),
+                Color.parseColor("#00000"),
+                Color.parseColor("#00000")
+            ),
+            null, Shader.TileMode.CLAMP
+        )
+        textView.paint.shader = textShader
     }
 
     fun startTaskService() {

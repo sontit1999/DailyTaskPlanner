@@ -41,4 +41,18 @@
     <string name="please_enter_title">Please enter the name of the task</string>
     <string name="msg_language">Language</string>
     <string name="ok">Ok</string>
+    <string name="my_age">Your age</string>
+    <string name="under18">Under 18</string>
+    <string name="age1824">18-24</string>
+    <string name="age2435">25-34</string>
+    <string name="age3544">35-44\n</string>
+    <string name="ageover45">Over 44</string>
+    <string name="msg_please_select_age">Please select age to continue</string>
+    <string name="how_old_are_you">How old are you ?</string>
+    <string name="sub_my_age"><![CDATA[Just one step to personalize your ringtones!]]></string>
+    <string name="under_eighteen"><![CDATA[Under 18]]></string>
+    <string name="over_forty_five"><![CDATA[Over 45]]></string>
+    <string name="eighteen_twenty_four"><![CDATA[18 - 24]]></string>
+    <string name="twenty_five_thirty_four"><![CDATA[25 - 34]]></string>
+    <string name="thirty_five_forty_four"><![CDATA[35 - 44]]></string>
 </resources>

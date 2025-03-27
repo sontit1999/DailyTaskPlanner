@@ -20,6 +20,7 @@ import com.ls.dailytaskplanner.utils.Logger
 import com.ls.dailytaskplanner.utils.NotificationUtils
 import com.ls.dailytaskplanner.utils.TrackingHelper
 import java.time.LocalDateTime
+import java.util.Date
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -75,7 +76,7 @@ class NotificationWorker(private val appContext: Context, workerParams: WorkerPa
         const val TAG = "NotificationWorker"
         const val ONE_DAY = 24L
 
-        @RequiresApi(Build.VERSION_CODES.O)
+
         fun scheduleNotification(context: Context) {
             val notificationWork =
                 OneTimeWorkRequestBuilder<NotificationWorker>() // Flex interval is set to 15 minutes
@@ -86,7 +87,7 @@ class NotificationWorker(private val appContext: Context, workerParams: WorkerPa
                             .build()
                     )
                     .addTag(TAG)
-                    .addTag(LocalDateTime.now().toString())
+                    .addTag(Date().toString())
                     .build()
 
             WorkManager.getInstance(context).enqueue(notificationWork)

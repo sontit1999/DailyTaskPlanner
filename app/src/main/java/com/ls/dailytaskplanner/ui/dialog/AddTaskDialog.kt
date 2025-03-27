@@ -97,17 +97,14 @@ class AddTaskDialog : DialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        AdManager.loadInterAd()
         TrackingHelper.logEvent(AllEvents.VIEW_ADD_TASK)
         initData()
         initRecyclerView()
         bindingAction()
         setUpObserver()
-        loadNativeAd()
     }
 
-    private fun loadNativeAd() {
-
-    }
 
     private fun initData() {
         taskEdit?.let {

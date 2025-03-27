@@ -278,10 +278,8 @@ class ForegroundService : Service() {
     }
 
     companion object {
-
         const val TAG = "ForegroundServiceTask"
         const val TIME_CHECK_TASK = 60 * 1000L
-        const val TIME_USER_ACTIVE_10_MINUTES = 10 * 60 * 1000L
 
     }
 }

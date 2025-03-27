@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/rootLayout"
+        android:background="@color/white"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/txtTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:text="@string/how_old_are_you"
+            android:textColor="#000000"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/btnContinue"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ScrollView
+            android:id="@+id/layoutNested"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="15dp"
+            app:layout_constraintBottom_toTopOf="@+id/containerNativeAge"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/txtTitle">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="15dp"
+                android:paddingEnd="15dp">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/btnAgeOne"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/bg_option_age_ab"
+                    android:gravity="center"
+                    android:text="@string/under_eighteen"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/imgChooseOne"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="20dp"
+                    android:src="@drawable/ic_done_age"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="@+id/btnAgeOne"
+                    app:layout_constraintEnd_toEndOf="@+id/btnAgeOne"
+                    app:layout_constraintTop_toTopOf="@+id/btnAgeOne" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/btnAgeTow"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/bg_option_age_ab"
+                    android:gravity="center"
+                    android:text="@string/eighteen_twenty_four"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/btnAgeOne" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/imgChooseTwo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="20dp"
+                    android:src="@drawable/ic_done_age"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="@+id/btnAgeTow"
+                    app:layout_constraintEnd_toEndOf="@+id/btnAgeTow"
+                    app:layout_constraintTop_toTopOf="@+id/btnAgeTow" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/btnAgeThree"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/bg_option_age_ab"
+                    android:gravity="center"
+                    android:text="@string/twenty_five_thirty_four"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/btnAgeTow" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/imgChooseThree"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="20dp"
+                    android:src="@drawable/ic_done_age"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="@+id/btnAgeThree"
+                    app:layout_constraintEnd_toEndOf="@+id/btnAgeThree"
+                    app:layout_constraintTop_toTopOf="@+id/btnAgeThree" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/btnAgeFour"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/bg_option_age_ab"
+                    android:gravity="center"
+                    android:text="@string/thirty_five_forty_four"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/btnAgeThree" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/imgChooseFour"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="20dp"
+                    android:src="@drawable/ic_done_age"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="@+id/btnAgeFour"
+                    app:layout_constraintEnd_toEndOf="@+id/btnAgeFour"
+                    app:layout_constraintTop_toTopOf="@+id/btnAgeFour" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/btnAgeFive"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/bg_option_age_ab"
+
+                    android:gravity="center"
+                    android:text="@string/over_forty_five"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/btnAgeFour" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/imgChooseFive"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="20dp"
+                    android:src="@drawable/ic_done_age"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="@+id/btnAgeFive"
+                    app:layout_constraintEnd_toEndOf="@+id/btnAgeFive"
+                    app:layout_constraintTop_toTopOf="@+id/btnAgeFive" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </ScrollView>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/btnContinue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="15dp"
+            android:gravity="center"
+            android:visibility="gone"
+            android:paddingStart="18dp"
+            android:textStyle="bold"
+            android:paddingTop="10dp"
+            android:paddingEnd="18dp"
+            android:paddingBottom="10dp"
+            android:text="@string/msg_btn_continue"
+            android:textAllCaps="false"
+            android:textColor="#000000"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="@+id/txtTitle"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/txtTitle"
+            app:textAllCaps="true" />
+
+        <RelativeLayout
+            android:id="@+id/containerNativeAge"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHeight_percent="0.35"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <FrameLayout
+                android:id="@+id/layoutAdsAb"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:background="@drawable/bg_native_item_age_ab"
+                android:paddingBottom="17dp"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHeight_percent="0.4"
+                app:layout_constraintStart_toStartOf="parent" />
+        </RelativeLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
