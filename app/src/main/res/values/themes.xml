@@ -3,6 +3,7 @@
 
     <style name="Theme.DailyTaskPlanner" parent="Theme.MaterialComponents.Light.DarkActionBar" >
         <item name="android:statusBarColor">#03A9F4</item>
+        <item name="android:fontFamily">@font/bevietnam</item>
     </style>
 
     <style name="DialogTheme" parent="Theme.DailyTaskPlanner">

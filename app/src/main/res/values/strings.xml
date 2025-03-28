@@ -45,7 +45,7 @@
     <string name="under18">Under 18</string>
     <string name="age1824">18-24</string>
     <string name="age2435">25-34</string>
-    <string name="age3544">35-44\n</string>
+    <string name="age3544">35-44</string>
     <string name="ageover45">Over 44</string>
     <string name="msg_please_select_age">Please select age to continue</string>
     <string name="how_old_are_you">How old are you ?</string>

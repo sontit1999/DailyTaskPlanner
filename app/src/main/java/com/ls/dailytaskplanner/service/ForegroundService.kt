@@ -270,7 +270,7 @@ class ForegroundService : Service() {
         return NotificationCompat.Builder(this, NotificationUtils.CHANNEL_ID)
             .setContentTitle(getString(R.string.app_name))
             .setContentText(message)
-            .setSmallIcon(R.drawable.icon_task)
+            .setSmallIcon(R.drawable.pencil)
             .setAutoCancel(false)
             .setOngoing(true)
             .setContentIntent(pendingIntent)

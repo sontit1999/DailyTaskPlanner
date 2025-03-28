@@ -1,5 +1,6 @@
 package com.ls.dailytaskplanner.ui.splash
 
+import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -68,7 +69,7 @@ class DialogAge : BaseFragment<DialogAnswerAgeBinding, AgeViewModel>() {
                 binding.layoutAdsAb.visible()
                 val frameLayout: FrameLayout = binding.layoutAdsAb
                 val adView = LayoutInflater.from(context).inflate(
-                    R.layout.native_add_task, null
+                    R.layout.native_age, null
                 ) as NativeAdView
                 AdManager.populateUnifiedNativeAdView(it, adView)
                 frameLayout.removeAllViews()
@@ -87,7 +88,7 @@ class DialogAge : BaseFragment<DialogAnswerAgeBinding, AgeViewModel>() {
             binding.layoutAdsAb.visible()
             val frameLayout: FrameLayout = binding.layoutAdsAb
             val adView = LayoutInflater.from(context).inflate(
-                R.layout.native_add_task, null
+                R.layout.native_age, null
             ) as NativeAdView
             AdManager.populateUnifiedNativeAdView(AdManager.nativeAge2LiveData.value, adView)
             frameLayout.removeAllViews()
@@ -112,6 +113,16 @@ class DialogAge : BaseFragment<DialogAnswerAgeBinding, AgeViewModel>() {
 
 
     private fun setup() {
+        if (RemoteConfig.commonConfig.highlightButtonNext) {
+            binding.btnContinue.setTextColor(Color.WHITE)
+            binding.btnContinue.setBackgroundDrawable(
+                ResourcesCompat.getDrawable(
+                    resources,
+                    R.drawable.background_btn_intro,
+                    null
+                )
+            )
+        }
         binding.txtTitle.text = getString(R.string.my_age)
         binding.btnContinue.text = getString(R.string.msg_btn_continue)
         binding.btnAgeOne.text = getString(R.string.under18)
@@ -156,21 +167,12 @@ class DialogAge : BaseFragment<DialogAnswerAgeBinding, AgeViewModel>() {
     }
 
     private fun setBackgroundSelected(view: AppCompatTextView) {
-        if (RemoteConfig.commonConfig.highlightButtonNext) {
-            binding.btnContinue.setBackgroundDrawable(
-                ResourcesCompat.getDrawable(
-                    resources,
-                    R.drawable.background_btn_intro,
-                    null
-                )
-            )
-        }
-        binding.btnContinue.visible()
         updateNativeAgeV2()
         didSelectedAge = true
         resetDefaultBackground()
         backGroundChoose(view)
         view.typeface = Typeface.DEFAULT_BOLD
+        view.setTextColor(Color.WHITE)
         when (view.id) {
             R.id.btnAgeOne -> showView(binding.imgChooseOne)
             R.id.btnAgeTow -> showView(binding.imgChooseTwo)
@@ -196,6 +198,11 @@ class DialogAge : BaseFragment<DialogAnswerAgeBinding, AgeViewModel>() {
         binding.btnAgeThree.typeface = Typeface.DEFAULT
         binding.btnAgeFour.typeface = Typeface.DEFAULT
         binding.btnAgeFive.typeface = Typeface.DEFAULT
+        binding.btnAgeOne.setTextColor(Color.BLACK)
+        binding.btnAgeTow.setTextColor(Color.BLACK)
+        binding.btnAgeThree.setTextColor(Color.BLACK)
+        binding.btnAgeFour.setTextColor(Color.BLACK)
+        binding.btnAgeFive.setTextColor(Color.BLACK)
     }
 
     private fun backGroundNotChoose(view: View) {
@@ -203,7 +210,7 @@ class DialogAge : BaseFragment<DialogAnswerAgeBinding, AgeViewModel>() {
     }
 
     private fun backGroundChoose(view: View) {
-        view.setBackgroundResource(R.drawable.bg_btn_age)
+        view.setBackgroundResource(R.drawable.bg_native_item_age_ab)
     }
 
     private fun hideView(view: View) {

@@ -39,7 +39,7 @@ object NotificationUtils {
         val notification =  NotificationCompat.Builder(App.mInstance, CHANNEL_ID)
             .setContentTitle(title)
             .setContentText(content)
-            .setSmallIcon(R.drawable.icon_task)
+            .setSmallIcon(R.drawable.pencil)
             .setContentIntent(pendingIntent)
             .setAutoCancel(true)
             .build()
@@ -59,7 +59,7 @@ object NotificationUtils {
 
         val notify = NotificationCompat.Builder(context, CHANNEL_ID)
             .setContentTitle(title)
-            .setSmallIcon(R.drawable.icon_task)
+            .setSmallIcon(R.drawable.pencil)
             .setAutoCancel(true)
             .setContentIntent(pendingIntent)
             .build()
@@ -81,7 +81,7 @@ object NotificationUtils {
             .setContentTitle(title)
             .setContentText(content)
             .setAutoCancel(true)
-            .setSmallIcon(R.drawable.icon_task)
+            .setSmallIcon(R.drawable.pencil)
             .setContentIntent(pendingIntent)
             .build()
 
